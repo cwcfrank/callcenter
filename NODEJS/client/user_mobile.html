@@ -1,0 +1,188 @@
+<!doctype html>
+<html>
+    <head>
+        <title>ID YOURS</title>
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+        <!--<link rel="stylesheet" type="text/css" href="main.css">-->
+        <script src="signaling_channel.js"></script>
+        <script src="sdp.js"></script>
+        <script src="user.js"></script>
+        <script src="BrowserDetect.js"></script>
+        <script src="https://www.id-yours.com/js/jquery.min.js"></script>
+    </head>
+    <style>
+      video { 
+         background: black; 
+         border: 1px solid #009abd; 
+      }
+		
+      .call-page { 
+         position: relative; 
+         display: block; 
+         margin: 0 auto; 
+         width: 100%; 
+         height: 100%;
+		 /*top:22px; */
+      } 
+		
+      #self_view { 
+         height: 20%; 
+         position: absolute; 
+         right: 0px; 
+      }
+		
+      #remote_view { 
+         width: 100%; 
+         height: 30%;
+      }
+
+    </style>
+    
+
+    <body>
+   
+        <!--<section id="main-section">
+            <div id="settings-container">
+                Customer service : <script>document.write(location.hash);</script>--><input type="hidden" id="session_txt" value="" size="10">
+                
+                
+                <input type="checkbox" id="audio_cb" checked>Audio
+                <input type="checkbox" id="video_cb" checked>Video
+                
+                <input type="hidden" id="chat_cb" checked>
+                <div id="audio-only-container"></div>
+                <div id="share-container" style="display:none;">
+                    Send link to a friend: <a id="share_link" target="_blank" href=""></a>
+                </div>
+          
+
+       
+            
+            <div id="video-container" class="call-page">
+            	<font id="loding_font" style="position:absolute; z-index:9999; color:#FFF; left:30%; top:35%; font-size:20px;">Please check the microphone,video is enabled and click the "Call" button.</font>
+                <video id="self_view" class="shadow owr-overlay-video" autoplay style="z-index:999;" muted="muted"></video>
+                <video id="remote_view" class="shadow owr-overlay-video" controls playsinline="true" autoplay></video>
+            </div>
+            
+            <div id="chat_div"></div>
+            <div id="chat-container" style="display:none;">
+                <input type="sendtext" id="chat_txt" disable placeholder="Type here">
+                <input type="button" class="btn" id="chat_but" value="Send">
+            </div>
+<!--            <div id="log_div"></div>
+        </section>
+        <footer>
+            Copyright ID YOURS
+        </footer>-->
+        
+        <!--等待通話音樂 -->      
+        <audio id="audio1" style=" display:none;" controls loop><source = src="ring.mp3" type="audio/mp3"></audio>
+        
+        
+        <input style="background: url(user-call-start.gif);border:none; width:40px; height:40px;" class="btn" type="button" id="join_but" disabled>
+        
+        <!--<input style="background: url(user-stop.png);border:none; width:40px; height:40px;" class="btn" type="button" id="close_but" onClick="gusstphoneleave();">-->
+        <button style="background: url(user-leave.png);border:none; width:40px; height:40px;" type="button" id="close_but" onClick="guestphoneleave();"></button>
+        <input class="btn" type="hidden" id="call_but" value="Video Chat" disabled>
+        
+<!--取得上一頁 父視窗-->        
+<iframe id="iframeId" width="100%" height="500px"></iframe>  
+
+<script type="text/javascript">
+
+//通話30分鐘自行斷線
+/*var CountDownSecond = 1800; //讓倒數計時器一開始的數字是10，10秒鐘後關閉視窗
+CountDown();
+function CountDown() {
+if (CountDownSecond !=0) {
+CountDownSecond -= 1;
+} else {
+	guestphoneleavetime();
+	return;
+}
+setTimeout("CountDown()",1000);
+}	*/
+
+	var string = location.search;
+	var NewArray = new Array();
+	var NewArray = string.split("local=");
+	//alert(NewArray[1]);
+	
+	document.getElementById('iframeId').src = NewArray[1];
+	
+<!--離開房間-->	
+function guestphoneleave(){
+
+		var guestid = location.hash;
+		var guest_num = guestid.match(/\d+/);
+		//alert(guest_num);
+		var jsonpurl = 'https://www.id-yours.com:443/guest_offline.php?guestid=' +guest_num;
+
+		$.ajax({ 
+			type: "get",
+			async: false,
+		    url:jsonpurl,
+			dataType: 'jsonp',
+			jsonp: "mycallback",
+			crossDomain: true,
+			jsonpCallback:'aa',
+			error: function(res){
+				alert("Fail");
+				},		
+					
+			success: function(res){
+				//alert(res.msg);
+			newData=res.msg.replace(/\s/g,''); //使用正規表達式，否則出錯
+				if(newData=="OK"){
+			   			alert("You have left the room!");
+						window.close();
+				}else{	 
+					 alert("Wrong");
+									       }
+										   
+			}
+                            });
+                            return false;
+                    };	
+	
+
+<!--時間到離開房間-->	
+/*function guestphoneleavetime(){
+
+		var guestid = location.hash;
+		var guest_num = guestid.match(/\d+/);
+		//alert(guest_num);
+		var jsonpurl = 'https://www.id-yours.com:443/guest_offline.php?guestid=' +guest_num;
+
+		$.ajax({ 
+			type: "get",
+			async: false,
+		    url:jsonpurl,
+			dataType: 'jsonp',
+			jsonp: "mycallback",
+			crossDomain: true,
+			jsonpCallback:'aa',
+			error: function(res){
+				alert("Fail");
+				},		
+					
+			success: function(res){
+				//alert(res.msg);
+			newData=res.msg.replace(/\s/g,''); //使用正規表達式，否則出錯
+				if(newData=="OK"){
+						alert("Time up,please recall.");
+						window.close();
+				}else{	 
+					 alert("Wrong");
+									       }
+										   
+			}
+                            });
+                            return false;
+                    };	*/
+</script> 
+<!--取得上一頁 父視窗END-->
+        
+       
+    </body>
+</html>

@@ -75,7 +75,6 @@ class MySQL{
 		$this->result_nums = @mysql_affected_rows($this->conn); //记录影响的行数
 		return $this->result_nums; //返回影响的行数
 	}
-
 	/*
 	 * 只能是"select"查询, 用$this->result_nums记录查询结果数
 	 * @return  query_id

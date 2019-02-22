@@ -48,8 +48,10 @@ foreach($colors as $key => $value){
 
 $js_var = "pagetitle=\"".SITE_TITLE."\",soundon=\"$lang[soundon]\",soundoff=\"$lang[soundoff]\",newguest=\"$lang[newguest]\",ban=\"$lang[ban]\",baninfo=\"$lang[baninfo]\",unban=\"$lang[unban]\",unbaninfo=\"$lang[unbaninfo]\",reonline=\"$lang[reonlineg]\",er_system=\"$lang[er_system]\",er_goffline=\"$lang[er_goffline]\",sender_sys=\"$lang[system]\",guestname=\"$lang[guest]\",username=\"$lang[isay]\",callcentername=\"$userinfo[userfrontname]\",t_url=\"".TURL."\"";
 
+
+
 //窗口內容
-$x_win_content = '<div class="guest"><div class="guest_top"><div class="ico_history"><img src="'.TURL.'images/history.gif"></div><div id="history_guestid" class="history"></div></div><div class="guest_tools"><div id="colors_guestid" class="colors_div" style="display:none">'.$color_squares.'</div><div id="smilies_guestid" class="smilies_div" style="display:none">'.$smilies.'</div><div id="tools_sound_guestid" class="tools_sound_on" onmouseover="chClassname(this, \\\'sound\\\');chSoundTitle(this);" onclick="toggleTools(guestid, \\\'sound\\\');"></div><div id="tools_smile_guestid" class="tools_smile_off" onclick="showSmilies(guestid, 0);" onmouseover="showSmilies(guestid);" title="'.$lang['smilies'].'"></div><div id="tools_color_guestid" class="tools_color_off" onclick="showColors(guestid, 0);" onmouseover="showColors(guestid);" title="'.$lang['fontcolor'].'"></div><div id="tools_bold_guestid" class="tools_bold_off" onmouseover="chClassname(this, \\\'bold\\\');" onclick="toggleTools(guestid, \\\'bold\\\');" title="'.$lang['bold'].'"></div><div id="tools_italic_guestid" class="tools_italic_off" onmouseover="chClassname(this, \\\'italic\\\');" onclick="toggleTools(guestid, \\\'italic\\\');" title="'.$lang['italic'].'"></div><div id="tools_underline_guestid" class="tools_underline_off" onmouseover="chClassname(this, \\\'underline\\\');" onclick="toggleTools(guestid, \\\'underline\\\');" title="'.$lang['underline'].'"></div><div id="tools_reset_guestid" class="tools_reset_off" onmouseover="chClassname(this, \\\'reset\\\');" onclick="ResetInput(guestid);" title="'.$lang['reset'].'"></div><div id="tools_msg_guestid" class="tools_msg_off" onmouseover="chClassname(this, \\\'msg\\\');" onclick="showMsgs(guestid, 0);"></div></div><div class="guest_bottom"><div class="ico_message"><img src="'.TURL. 'images/message.gif"></div><div class="message_div"><textarea id="message_guestid" class="message"></textarea></div><div class="tools_send_div"><div class="tools_send" onmouseover="chClassname(this, \\\'send\\\');" onclick="sending(guestid);return false;">發送</div></div></div></div>';
+$x_win_content = '<div class="guest"><div class="guest_top"><div class="ico_history"><img src="'.TURL.'images/history.gif"></div><div id="history_guestid" class="history"></div></div><div class="guest_tools"><div id="colors_guestid" class="colors_div" style="display:none">'.$color_squares.'</div><div id="smilies_guestid" class="smilies_div" style="display:none">'.$smilies.'</div><div id="tools_sound_guestid" class="tools_sound_on" onmouseover="chClassname(this, \\\'sound\\\');chSoundTitle(this);" onclick="toggleTools(guestid, \\\'sound\\\');"></div><div id="tools_smile_guestid" class="tools_smile_off" onclick="showSmilies(guestid, 0);" onmouseover="showSmilies(guestid);" title="'.$lang['smilies'].'"></div><div id="tools_color_guestid" class="tools_color_off" onclick="showColors(guestid, 0);" onmouseover="showColors(guestid);" title="'.$lang['fontcolor'].'"></div><div id="tools_bold_guestid" class="tools_bold_off" onmouseover="chClassname(this, \\\'bold\\\');" onclick="toggleTools(guestid, \\\'bold\\\');" title="'.$lang['bold'].'"></div><div id="tools_italic_guestid" class="tools_italic_off" onmouseover="chClassname(this, \\\'italic\\\');" onclick="toggleTools(guestid, \\\'italic\\\');" title="'.$lang['italic'].'"></div><div id="tools_underline_guestid" class="tools_underline_off" onmouseover="chClassname(this, \\\'underline\\\');" onclick="toggleTools(guestid, \\\'underline\\\');" title="'.$lang['underline'].'"></div><div id="tools_reset_guestid" class="tools_reset_off" onmouseover="chClassname(this, \\\'reset\\\');" onclick="ResetInput(guestid);" title="'.$lang['reset'].'"></div><div id="tools_msg_guestid" class="tools_msg_off" onmouseover="chClassname(this, \\\'msg\\\');" onclick="showMsgs(guestid, 0);"></div></div><div class="guest_bottom"><div class="ico_message"><img src="'.TURL. 'images/message.gif"></div><div class="message_div"><textarea id="message_guestid" class="message"></textarea></div><div class="tools_send_div"><div class="tools_send" onmouseover="chClassname(this, \\\'send\\\');" onclick="sending(guestid);return false;">SEND</div></div></div></div>';
 
 
 echo '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -69,24 +71,20 @@ echo '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.or
 <div id="maindiv">
 	<div id="header">
 		<div class="logo"><img src="'.TURL.'images/logo.gif" align="absmiddle"> ' . SITE_TITLE . '</div>
-		<div id="userinfo">'. preg_replace('/\/\/1/i', '<span class=spec>'.$userinfo['userfrontname'].'</span>', $lang['welcome_user']) .'&nbsp;&nbsp;'.Iif($userinfo['comments'], '<a href="admin.mycomments.php" target="_blank">您有'.$userinfo['comments'].'條留言</a>', '暫無給您的留言').'.&nbsp;&nbsp;&nbsp;&nbsp;[ <a href="index.php?logout=1" onclick="return confirm(\''.$lang['logoutinfo'].'\');"><span style="color:#FF3300;font-weight:700;">'.$lang['logout'].'</span></a> ]&nbsp;&nbsp;&nbsp;&nbsp;[ <span id="setbusy"><a href="javascript:;" onclick="setbusy();return false;"><b>掛起</b></a> </span>]</div>
+		<div id="userinfo">'. preg_replace('/\/\/1/i', '<span class=spec>'.$userinfo['userfrontname'].'</span>', $lang['welcome_user']) .'&nbsp;&nbsp;'.Iif($userinfo['comments'], '<a href="admin.mycomments.php" target="_blank">您有'.$userinfo['comments'].'messages</a>', 'No message to you yet').'.&nbsp;&nbsp;&nbsp;&nbsp;<input class="btn btn-danger" id="chk" type="button" value="Online" onClick="if(document.getElementById(\'chk\').value==\'Online\'){document.getElementById(\'chk\').value=\'Busy\';document.getElementById(\'chk\').style.backgroundColor=\'red\';document.getElementById(\'chk\').style.color=\'white\'; setstatusoff();}else{document.getElementById(\'chk\').value=\'Online\';document.getElementById(\'chk\').style.backgroundColor=\'\';document.getElementById(\'chk\').style.color=\'black\';  setstatuson();}" />&nbsp;&nbsp;&nbsp;&nbsp;[ <a href="index.php?logout=1" onclick="return confirm(\''.$lang['logoutinfo'].'\');"><span style="color:#FF3300;font-weight:700;">'.$lang['logout'].'</span></a> ]&nbsp;&nbsp;&nbsp;&nbsp;</div>
 		<div class="timer_div"><span id="timer">00:00</span></div>
 	</div>
-	<div class="contentdiv">
+	<div class="contentdiv" style="width:auto;">
 		<div class="welive_div">
 			<table id="welive_list" border="0" cellpadding="0" cellspacing="0" class="waiting">
 				<thead>
 					<tr>
-						<th class="first">訪客</th>
-						<th>上線時間</th>
-						<th>IP地址</th>
-						<th>瀏覽器</th>
-						<th>來自頁面</th>
-						<th>操作</th>
+						<th class="first" style="width:1200px;">Visitors</th>
+						<th>Basic Info.</th>
 					</tr>
 				</thead>
 				<tbody id="welive">
-				<tr><th colspan="7" class="last"></th></tr>
+				<tr><th colspan="2" class="last"></th></tr>
 				</tbody>
 			</table>
 		</div>
@@ -96,7 +94,7 @@ echo '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.or
 </div>
 
 <div id="footer">
-	<div class="copyright">' . COPYRIGHT . '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#top" title="TOP"><img src="'.TURL.'images/btn_top.gif" align="absmiddle" /></a></div>
+	<div class="copyright">© 2017 ID Yours Call Center&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#top" title="TOP"><img src="'.TURL.'images/btn_top.gif" align="absmiddle" /></a></div>
 	<div class="sysinfo_div"><span id="status_ok" class="status_ok"><img src="'.TURL.'images/status_ok.gif" align="top">&nbsp;&nbsp;'.$lang['status_ok'].'</span><span id="status_err" class="status_err"><img src="'.TURL.'images/status_err.gif" align="top">&nbsp;&nbsp;'.$lang['er_system'].'</span><span id="status_err2" class="status_err"><img src="'.TURL.'images/status_err.gif" align="top">&nbsp;&nbsp;'.$lang['er_database2'].'</span></div>
 	<div class="loading_div"><span id="loading"><img src="'.TURL.'images/waitt.gif" align="top"></span>&nbsp;</div>
 	<div id="sounder" style="width:0;height:0;visibility:hidden;overflow:hidden;"></div>

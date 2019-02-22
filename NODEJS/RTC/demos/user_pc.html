@@ -1,0 +1,341 @@
+<!-- Demo version: 2017.08.06 -->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <link rel="shortcut icon" href="ico/favicon.ico">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="msapplication-tap-highlight" content="no">
+    <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+
+
+
+    <title>ID Yours - Callcenter</title>
+
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
+
+    <style>
+        * {
+            word-wrap:break-word;
+        }
+        video {
+            object-fit: fill;
+            width: 30%;
+        }
+        button,
+        input,
+        select {
+            font-weight: normal;
+            padding: 2px 4px;
+            text-decoration: none;
+            display: inline-block;
+            text-shadow: none;
+            font-size: 16px;
+            outline: none;
+        }
+
+        .make-center {
+            text-align: center;
+            padding: 5px 10px;
+        }
+
+        img, input, textarea {
+          max-width: 100%
+        }
+
+        @media all and (max-width: 500px) {
+            .fork-left, .fork-right, .github-stargazers {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <article>
+
+
+        <div class="github-stargazers"></div>
+
+        <section class="experiment">
+            <div class="make-center">
+                <input type="hidden" id="room-id" value="abcdef" autocorrect=off autocapitalize=off size=20>
+                <button id="open-room" style="display:none;">Open Room</button>
+                <button id="join-room" style="display:none;">Join Room</button>
+                <div id="blockade"></div>
+                <!--等待通話音樂 -->      
+       			<audio id="audio1" style=" display:none;" controls loop><source = src="ring.mp3" type="audio/mp3"></audio>
+            </div>
+
+            <div id="videos-container"></div>
+            <div id="loding" style="margin-top:-280px; margin-left:365px; position:absolute;"><img src="loadingBar.gif"></div>
+        </section>
+
+
+        <script src="dist/RTCMultiConnection.js"></script>
+
+        <!-- custom layout for HTML5 audio/video elements -->
+        <script src="getMediaElement.js"></script>
+
+        <!-- socket.io for signaling -->
+        <script src="socket.io.js"></script>
+        
+        <!-- capture screen from any HTTPs domain! -->
+        <script src="getScreenId.js"></script>
+
+        <script>
+
+            function srrrr() {
+					<!--alert("22");-->
+                navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
+                var getUserMediaSuccess = function() {};
+                var getUserMediaFailure = function() {};
+            }
+		
+			//撥放語音答鈴音樂
+            audio1.play();		
+		
+            // ......................................................
+            // .......................UI Code........................
+            // ......................................................
+            
+            document.getElementById('join-room').onclick = function() {
+                disableInputButtons();
+                connection.join(document.getElementById('room-id').value);
+            };
+
+
+            // ......................................................
+            // ..................RTCMultiConnection Code.............
+            // ......................................................
+
+            var connection = new RTCMultiConnection();
+            
+            // Using getScreenId.js to capture screen from any domain
+            // You do NOT need to deploy Chrome Extension YOUR-Self!!
+            connection.getScreenConstraints = function(callback) {
+                getScreenConstraints(function(error, screen_constraints) {
+                    if (!error) {
+                        screen_constraints = connection.modifyScreenConstraints(screen_constraints);
+                        callback(error, screen_constraints);
+                        return;
+                    }
+                    throw error;
+                });
+            };
+
+            // by default, socket.io server is assumed to be deployed on your own URL
+            connection.socketURL = '/';
+
+            // comment-out below line if you do not have your own socket.io server
+            // connection.socketURL = 'https://rtcmulticonnection.herokuapp.com:443/';
+
+            connection.socketMessageEvent = 'audio-video-screen-demo';
+
+            connection.session = {
+                audio: true,
+                video: true
+            };
+
+            connection.sdpConstraints.mandatory = {
+                OfferToReceiveAudio: true,
+                OfferToReceiveVideo: true
+            };
+
+            connection.videosContainer = document.getElementById('videos-container');
+            connection.onstream = function(event) {
+                if(document.getElementById(event.streamid)) {
+                    var existing = document.getElementById(event.streamid);
+                    existing.parentNode.removeChild(existing);
+                }
+                
+                var width = parseInt(connection.videosContainer.clientWidth / 2) - 5;
+                
+                if(event.stream.isScreen === true) {
+                    width = connection.videosContainer.clientWidth - 20;
+                }
+                
+                var mediaElement = getMediaElement(event.mediaElement, {
+                    title: event.userid,
+                    buttons: ['full-screen', 'mute-video'],
+                    width: width,
+                    showOnMouseEnter: false
+                });
+
+                connection.videosContainer.appendChild(mediaElement);
+
+                setTimeout(function() {
+                    mediaElement.media.play();
+                }, 5000);
+
+                mediaElement.id = event.streamid;
+				
+            };
+
+            connection.onstreamended = function(event) {
+                var mediaElement = document.getElementById(event.streamid);
+                if(mediaElement) {
+                    mediaElement.parentNode.removeChild(mediaElement);
+                }
+            };
+
+            function disableInputButtons() {
+                document.getElementById('open-room').disabled = true;
+                document.getElementById('join-room').disabled = true;
+                document.getElementById('room-id').disabled = true;
+            }
+
+            // ......................................................
+            // ......................Handling Room-ID................
+            // ......................................................
+
+            function showRoomURL(roomid) {
+                var roomHashURL = '#' + roomid;
+                var roomQueryStringURL = '?roomid=' + roomid;
+
+                var html = '<h2>Unique URL for your room:</h2><br>';
+
+                html += 'Hash URL: <a href="' + roomHashURL + '" target="_blank">' + roomHashURL + '</a>';
+                html += '<br>';
+                html += 'QueryString URL: <a href="' + roomQueryStringURL + '" target="_blank">' + roomQueryStringURL + '</a>';
+
+                var roomURLsDiv = document.getElementById('room-urls');
+                roomURLsDiv.innerHTML = html;
+
+                roomURLsDiv.style.display = 'block';
+            }
+
+            (function() {
+                var params = {},
+                    r = /([^&=]+)=?([^&]*)/g;
+
+                function d(s) {
+                    return decodeURIComponent(s.replace(/\+/g, ' '));
+                }
+                var match, search = window.location.search;
+                while (match = r.exec(search.substring(1)))
+                    params[d(match[1])] = d(match[2]);
+                window.params = params;
+            })();
+
+            var roomid = '';
+            if (localStorage.getItem(connection.socketMessageEvent)) {
+                roomid = localStorage.getItem(connection.socketMessageEvent);
+            } else {
+                roomid = connection.token();
+            }
+            document.getElementById('room-id').value = roomid;
+            document.getElementById('room-id').onkeyup = function() {
+                localStorage.setItem(connection.socketMessageEvent, this.value);
+            };
+
+            var hashString = location.hash.replace('#', '');
+            if(hashString.length && hashString.indexOf('comment-') == 0) {
+              hashString = '';
+            }
+
+            var roomid = params.roomid;
+            if(!roomid && hashString.length) {
+                roomid = hashString;
+            }
+
+            if(roomid && roomid.length) {
+                document.getElementById('room-id').value = roomid;
+                localStorage.setItem(connection.socketMessageEvent, roomid);
+
+/*                // auto-join-room
+                (function reCheckRoomPresence() {
+                    connection.checkPresence(roomid, function(isRoomExists) {
+                        if(isRoomExists) {
+                            connection.join(roomid);
+                            return;
+                        }
+
+                        setTimeout(reCheckRoomPresence, 5000);
+                    });
+                })();
+
+                disableInputButtons();*/
+            }
+			
+			
+
+				<!--自動開啟通話房間-->
+                disableInputButtons();
+                connection.open(document.getElementById('room-id').value, function() {
+                    showRoomURL(connection.sessionid);alert(connection.sessionid)
+                });
+
+        </script>
+
+<!--取得上一頁 父視窗-->        
+<iframe id="iframeId" width="100%" height="500px"></iframe>  
+
+<script type="text/javascript">
+
+//通話30分鐘自行斷線
+/*var CountDownSecond = 1800; //讓倒數計時器一開始的數字是10，10秒鐘後關閉視窗
+CountDown();
+function CountDown() {
+if (CountDownSecond !=0) {
+CountDownSecond -= 1;
+} else {
+	guestphoneleavetime();
+	return;
+}
+setTimeout("CountDown()",1000);
+}	*/
+
+	var string = location.search;
+	var NewArray = new Array();
+	var NewArray = string.split("local=");
+	//alert(NewArray[1]);
+	
+	document.getElementById('iframeId').src = NewArray[1];
+	
+
+	
+
+<!--時間到離開房間-->	
+/*function guestphoneleavetime(){
+
+		var guestid = location.hash;
+		var guest_num = guestid.match(/\d+/);
+		//alert(guest_num);
+		var jsonpurl = 'https://www.id-yours.com:443/guest_offline.php?guestid=' +guest_num;
+
+		$.ajax({ 
+			type: "get",
+			async: false,
+		    url:jsonpurl,
+			dataType: 'jsonp',
+			jsonp: "mycallback",
+			crossDomain: true,
+			jsonpCallback:'aa',
+			error: function(res){
+				alert("Fail");
+				},		
+					
+			success: function(res){
+				//alert(res.msg);
+			newData=res.msg.replace(/\s/g,''); //使用正規表達式，否則出錯
+				if(newData=="OK"){
+						alert("Time up,please recall.");
+						window.close();
+				}else{	 
+					 alert("Wrong");
+									       }
+										   
+			}
+                            });
+                            return false;
+                    };	*/
+</script> 
+<!--取得上一頁 父視窗END-->
+</body>
+
+</html>

@@ -99,7 +99,7 @@ if($action == 'displaysettings'){
 	</tr>
 
 	<tr>
-	<td><B>系統狀態</B><BR>關閉或開啟'.APP_NAME.'在線客服系統.</td>
+	<td><B>系統狀態</B><BR>關閉或開啟在線客服系統.</td>
 	<td>';
 	$Radio = NewObject('Radio');
 	$Radio->Name = 'settings[cActived]';
@@ -112,7 +112,7 @@ if($action == 'displaysettings'){
 	</tr>
 
 	<tr>
-	<td><B>網站默認時區</B><BR>'.APP_NAME.'在線客服系統將按默認時區顯示日期和時間.</td>
+	<td><B>網站默認時區</B><BR>在線客服系統將按默認時區顯示日期和時間.</td>
 	<td>';
 	$Select->Clear();
 	$Select->Name = 'settings[cTimezone]';

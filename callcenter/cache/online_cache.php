@@ -10,32 +10,77 @@ $welive_onlines  = array (
     'descriptionen' => '',
     'user' => 
     array (
-      2 => 
-      array (
-        'username' => 'service',
-        'type' => '1',
-        'isonline' => '0',
-        'isbusy' => '0',
-        'userfrontname' => '客服A',
-        'userfrontename' => 'Service',
-      ),
-      6 => 
-      array (
-        'username' => 'test',
-        'type' => '1',
-        'isonline' => '0',
-        'isbusy' => '0',
-        'userfrontname' => 'test',
-        'userfrontename' => 'test',
-      ),
       7 => 
       array (
-        'username' => 'frank',
+        'username' => 'test1',
         'type' => '1',
         'isonline' => '0',
         'isbusy' => '0',
-        'userfrontname' => 'frank',
-        'userfrontename' => 'frank',
+        'userfrontname' => 'John',
+        'userfrontename' => 'John',
+      ),
+      8 => 
+      array (
+        'username' => 'test2',
+        'type' => '1',
+        'isonline' => '1',
+        'isbusy' => '0',
+        'userfrontname' => 'Trace',
+        'userfrontename' => 'Trace',
+      ),
+      9 => 
+      array (
+        'username' => 'test3',
+        'type' => '1',
+        'isonline' => '0',
+        'isbusy' => '0',
+        'userfrontname' => 'Judy',
+        'userfrontename' => 'Judy',
+      ),
+      10 => 
+      array (
+        'username' => 'test4',
+        'type' => '1',
+        'isonline' => '0',
+        'isbusy' => '0',
+        'userfrontname' => 'Rachel',
+        'userfrontename' => 'Rachel',
+      ),
+      11 => 
+      array (
+        'username' => 'test5',
+        'type' => '1',
+        'isonline' => '0',
+        'isbusy' => '0',
+        'userfrontname' => 'Anna',
+        'userfrontename' => 'Anna',
+      ),
+      12 => 
+      array (
+        'username' => 'test6',
+        'type' => '1',
+        'isonline' => '0',
+        'isbusy' => '0',
+        'userfrontname' => 'Lena',
+        'userfrontename' => 'Lena',
+      ),
+      13 => 
+      array (
+        'username' => 'test7',
+        'type' => '1',
+        'isonline' => '0',
+        'isbusy' => '0',
+        'userfrontname' => 'Meggy',
+        'userfrontename' => 'Meggy',
+      ),
+      14 => 
+      array (
+        'username' => 'test8',
+        'type' => '1',
+        'isonline' => '0',
+        'isbusy' => '0',
+        'userfrontname' => 'Frank',
+        'userfrontename' => 'Frank',
       ),
     ),
   ),

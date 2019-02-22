@@ -216,7 +216,7 @@ if($action == 'editqms' OR $action == 'addqms'){
 		$user = array('userid' => 0, 'activated' => 1);
 	}
 
-	$info = '<font class=red> * 必填項</font>';
+	$info = '<font class=red> * Required</font>';
 
 	$getgroups = $DB->query("SELECT usergroupid, groupname FROM " . TABLE_PREFIX . "usergroup WHERE usergroupid<> 1 ORDER BY usergroupid");
 
@@ -272,7 +272,7 @@ if($action == 'editqms' OR $action == 'addqms'){
 	</tbody>
 	</table>';
 
-	PrintSubmit(Iif($userid, '保存更新', '添加客服'));
+	PrintSubmit(Iif($userid, 'Save', 'Delete'));
 	
 }
 
@@ -303,7 +303,7 @@ if($action == 'edituser' OR $action == 'adduser'){
 		$user = array('userid' => 0, 'activated' => 1);
 	}
 
-	$info = '<font class=red> * 必填項</font>';
+	$info = '<font class=red> * Required</font>';
 	$info_pass = Iif($userid, '<font class=green> * 不修改請留空</font>', $info);
 
 	$getgroups = $DB->query("SELECT usergroupid, groupname FROM " . TABLE_PREFIX . "usergroup ORDER BY usergroupid");
@@ -320,44 +320,44 @@ if($action == 'edituser' OR $action == 'adduser'){
 	<table id="welive_list" border="0" cellpadding="0" cellspacing="0" class="moreinfo">
 	<thead>
 	<tr>
-	<th colspan="2">'.Iif($userid, '編輯用戶', '添加用戶').'</th>
+	<th colspan="2">'.Iif($userid, 'Edit', 'Add Account').'</th>
 	</tr>
 	</thead>
 	<tbody>
 	<tr>
-	<td width="360">所屬客服群組:</td>
+	<td width="360">Group:</td>
 	<td>'.$usergroupselect.'</td>
 	</tr>
 	<tr>
-	<td>登錄名:</td>
+	<td>LoginName:</td>
 	<td><input type="text" name="username" value="'.$user['username'].'" size="30">'.$info.'</td>
 	</tr>';
 
 	if($userid){
 		echo '<tr>
-		<td>是否激活?</td>
+		<td>Status?</td>
 		<td><input type="checkbox" ' . Iif($user['userid'] == 1 OR $userid == $userinfo['userid'], 'disabled') .' name="activated" value="1" ' . Iif($user['activated'] == 1, 'checked="checked"') .'></td>
 		</tr>
 		<tr>
-		<td>顯示順序:</td>
+		<td>No.:</td>
 		<td><input type="text" name="displayorder" value="'.$user['displayorder'].'" size="10"></td>
 		</tr>	';
 	}
 
 	echo '<tr>
-	<td>密碼:</td>
+	<td>Password:</td>
 	<td><input type="password" name="password" size="30">'.$info_pass.'</td>
 	</tr>
 	<tr>
-	<td>確認密碼:</td>
+	<td>Password Again:</td>
 	<td><input type="password" name="passwordconfirm" size="30">'.$info_pass.'</td>
 	</tr>
 	<tr>
-	<td>中文名:</td>
+	<td>NickName:</td>
 	<td><input type="text" name="userfrontname" value="'.$user['userfrontname'].'" size="30">'.$info.'</td>
 	</tr>
 	<tr>
-	<td>英文名:</td>
+	<td>Name:</td>
 	<td><input type="text" name="userfrontename" value="'.$user['userfrontename'].'" size="30">'.$info.'</td>
 	</tr>
 	<tr>
@@ -379,7 +379,7 @@ if($action == 'edituser' OR $action == 'adduser'){
 	</tbody>
 	</table>';
 
-	PrintSubmit(Iif($userid, '保存更新', '添加用戶'));
+	PrintSubmit(Iif($userid, 'Save', '+Add'));
 	
 }
 
@@ -395,22 +395,23 @@ if($action == 'default'){
 		$usergroups[$usergroup['usergroupid']] = $usergroup['groupname'];
 	}
 
-	$getusers = $DB->query("SELECT userid, usergroupid, displayorder, username, type, activated, isonline, userfrontname, userfrontename, lastlogin FROM " . TABLE_PREFIX . "user ORDER BY usergroupid, displayorder");
+	$getusers = $DB->query("SELECT userid, usergroupid, displayorder, username, type, activated, isonline, status, userfrontname, userfrontename, lastlogin FROM " . TABLE_PREFIX . "user ORDER BY usergroupid, displayorder");
 
-	echo '&nbsp;&nbsp;&nbsp;<a href="admin.users.php?action=adduser">添加新用戶</a>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;<a href="admin.users.php?action=addqms">添加QQ, MSN或Skype等</a>
+	echo '&nbsp;&nbsp;&nbsp;<a href="admin.users.php?action=adduser">+Add Account</a>&nbsp;&nbsp;&nbsp;
 	<BR><BR><form method="post" action="admin.users.php" name="usersform">
 	<table id="welive_list" border="0" cellpadding="0" cellspacing="0" class="maintable">
 	<thead>
 	<tr>
-	<th>顯示順序</th>
-	<th>登錄名</th>
-	<th>狀態</th>
-	<th>所屬群組</th>
-	<th>中文名</th>
-	<th>英文名</th>
-	<th>服務狀態</th>
-	<th>最後登錄</th>
-	<th>刪除</th>
+	<th>No.</th>
+	<th>LoginName</th>
+	<th>Status</th>
+	<th>Group</th>
+	<th>NickName</th>
+	<th>Name</th>
+	<th>Online/Offline</th>
+	<th>Status</th>
+	<th>LastTime</th>
+	<th>Check</th>
 	</tr>
 	</thead>
 	<tbody>';
@@ -429,14 +430,15 @@ if($action == 'default'){
 		<td><a href="admin.users.php?action='.Iif($user['type']>1, 'editqms', 'edituser').'&userid='.$user['userid'].'" '.Iif(!$user['activated'], 'class="red"').'>' . $user['username']. '</a>'.Iif($typename, '&nbsp;&nbsp;('.$typename.')').'</td>
 		<td>
 		<select name="activateds[]">
-		<option value="1">正常</option>
-		<option style="color:red;" value="0" ' . Iif(!$user['activated'], 'SELECTED', '') . '>禁止</option>
+		<option value="1">Normal</option>
+		<option style="color:red;" value="0" ' . Iif(!$user['activated'], 'SELECTED', '') . '>Ban</option>
 		</select></td>
 		<td>' . $usergroups[$user['usergroupid']]. '</td>
 		<td>' . Iif($user['userfrontname'], $user['userfrontname'], '-'). '</td>
 		<td>' . Iif($user['userfrontename'], $user['userfrontename'], '-'). '</td>
-		<td>'.Iif($typename, '-', Iif($user['isonline'], '<span class="green">在線</span>', '離線')).'</td>
-		<td>'.Iif($typename, '-', Iif($user['lastlogin'], DisplayDate($user['lastlogin'], '', 1), '從未登錄')).'</td>
+		<td>'.Iif($typename, '-', Iif($user['isonline'], '<span class="green">Online</span>', 'Offline')).'</td>
+		<td>'.Iif($typename, '-', Iif($user['status'], '<span class="green">ON-AIR</span>', 'Busy')).'</td>
+		<td>'.Iif($typename, '-', Iif($user['lastlogin'], DisplayDate($user['lastlogin'], '', 1), 'Never')).'</td>
 		<td><input type="checkbox" name="deleteuserids[]" value="'.$user['userid'].'" '.Iif($user['userid'] == 1 OR $user['userid'] == $userinfo['userid'], 'disabled').'></td>
 		</tr>';
 	}
@@ -444,8 +446,8 @@ if($action == 'default'){
 	echo '</tbody>
 	</table>
 	<div style="margin-top:20px;text-align:center;">
-	<input type="submit" name="updateusers" value=" 保存更新 " />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-	<input type="submit" name="deleteusers" onclick="return confirm(\'確定刪除所選用戶嗎?\');" value=" 刪除用戶 " />
+	<input type="submit" name="updateusers" value=" Save " />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	<input type="submit" name="deleteusers" onclick="return confirm(\'Are you sure you want to delete the selected user??\');" value=" Delete " />
 	</div>
 	</form>';
 

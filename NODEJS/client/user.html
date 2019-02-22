@@ -1,0 +1,86 @@
+<!doctype html>
+<html>
+    <head>
+        <title>ID YOURS</title>
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+        <!--<link rel="stylesheet" type="text/css" href="main.css">-->
+        <script src="signaling_channel.js"></script>
+        <script src="sdp.js"></script>
+        <script src="user.js"></script>
+        <script src="BrowserDetect.js"></script>
+    </head>
+    <style>
+      video { 
+         background: black; 
+         border: 1px solid #009abd; 
+      }
+		
+      .call-page { 
+         position: relative; 
+         display: block; 
+         margin: 0 auto; 
+         width: 100%; 
+         height: 100%;
+		 /*top:22px; */
+      } 
+		
+      #self_view { 
+         height: 20%; 
+         position: absolute; 
+         right: 0px; 
+      }
+		
+      #remote_view { 
+         width: 100%; 
+         height: 30%;
+      }
+		
+    </style>
+    
+
+    <body>
+   
+        <!--<section id="main-section">
+            <div id="settings-container">
+                Customer service : <script>document.write(location.hash);</script>--><input type="hidden" id="session_txt" value="" size="10">
+                
+                
+                <input type="checkbox" id="audio_cb" checked>Audio
+                <input type="checkbox" id="video_cb" checked>Video
+                
+                <input type="hidden" id="chat_cb" checked>
+                <div id="audio-only-container"></div>
+                <div id="share-container" style="display:none;">
+                    Send link to a friend: <a id="share_link" target="_blank" href=""></a>
+                </div>
+          
+
+       
+            
+            <div id="video-container" class="call-page">
+            	<font id="loding_font" style="position:absolute; z-index:9999; color:#FFF; left:30%; top:50%; font-size:20px;">Please check the microphone,video is enabled and click the "Call" button.</font>
+                <video id="self_view" class="shadow owr-overlay-video" autoplay style="z-index:999;" muted="muted"></video>
+                <video id="remote_view" class="shadow owr-overlay-video" controls playsinline="true" autoplay></video>
+            </div>
+            
+            <div id="chat_div"></div>
+            <div id="chat-container" style="display:none;">
+                <input type="sendtext" id="chat_txt" disable placeholder="Type here">
+                <input type="button" class="btn" id="chat_but" value="Send">
+            </div>
+<!--            <div id="log_div"></div>
+        </section>
+        <footer>
+            Copyright ID YOURS
+        </footer>-->
+        
+        <!--等待通話音樂 -->      
+        <audio id="audio1" style=" display:none;" controls loop="loop"><source = src="ring.mp3" type="audio/mp3"></audio>
+        
+        
+        <input style="background: url(user-call-start.gif);border:none; width:40px; height:40px;" class="btn" type="button" id="join_but" disabled>
+        
+        <input style="background: url(user-stop.png);border:none; width:40px; height:40px;" class="btn" type="button" id="close_but" onClick="stopwebrtc();">
+        <input class="btn" type="hidden" id="call_but" value="Video Chat" disabled>
+    </body>
+</html>

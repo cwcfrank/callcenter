@@ -49,7 +49,7 @@ function get_userAgent($userAgent){
 						$ver = "1 or 2 (build " . $ver . ")";
 					}
 					if (preg_match("/mobile\/(\\d+(\\.\\d+(\\.\\d+)?)?)/", $userAgent, $matches)) {
-						$userAgent = "iPhone " . $matches[1] . " ($agent $ver)";
+						$userAgent = "iPhone ($agent $ver)";
 						break;
 					}
 				}

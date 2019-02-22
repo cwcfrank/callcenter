@@ -15,6 +15,8 @@ $uid = ForceIncomingInt('uid');
 $gid = ForceIncomingInt('gid');
 $act = ForceIncomingString('act');
 $ajax_last = ForceIncomingFloat('ajax_last');
+$sex = ForceIncomingString('sex');
+$age = ForceIncomingString('age');
 
 if(!$uid){
 	die('Hacking!');
@@ -33,13 +35,23 @@ $msgs = '';
 switch($act){
 	case 'offline': //离开页面时设置客服为离线状态
 		$DB->exe("UPDATE " . TABLE_PREFIX . "user SET isonline = 0 WHERE userid = '$uid'");
+		$DB->exe("UPDATE " . TABLE_PREFIX . "user SET status = 0 WHERE userid = '$uid'");
 		refreshCache($uid, 'isonline', '0'); //更新缓存
 		break;
 
 	case 'online':
 		$DB->exe("UPDATE " . TABLE_PREFIX . "user SET isonline = 1 WHERE userid = '$uid'");
+		$DB->exe("UPDATE " . TABLE_PREFIX . "user SET status = 1 WHERE userid = '$uid'");
 		refreshCache($uid, 'isonline', '1'); //更新缓存
 		WeLiveSend($realtime + $minitime, $guests, $msgs, $ajax_last, $DB->errno);
+		break;
+
+	case 'statuson': //离开页面时设置客服为离线状态
+		$DB->exe("UPDATE " . TABLE_PREFIX . "user SET status = 1 WHERE userid = '$uid'");
+		break;
+
+	case 'statusoff':
+		$DB->exe("UPDATE " . TABLE_PREFIX . "user SET status = 0 WHERE userid = '$uid'");
 		break;
 
 	case 'banned':
@@ -72,6 +84,14 @@ switch($act){
 	case 'unsetbusy': //解除忙碌状态
 		refreshCache($uid, 'isbusy', '0'); //更新缓存
 		break;
+		
+	case 'sex': //更新訪客性別
+			$DB->exe("UPDATE " . TABLE_PREFIX . "guest_record SET sex = '$sex' WHERE guestid = '$gid'");
+		break;		
+
+	case 'age': //更新訪客年齡
+			$DB->exe("UPDATE " . TABLE_PREFIX . "guest_record SET age = '$age' WHERE guestid = '$gid'");
+		break;		
 }
 
 ?>

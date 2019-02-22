@@ -42,10 +42,10 @@ if($action == 'default'){
     $maxrows = $DB->getOne("SELECT COUNT(msgid) AS value FROM " . TABLE_PREFIX . "msg ".$searchsql);
     echo '<table border="0" cellpadding="0" cellspacing="0" width="100%">
 	<tr>
-	<td>&nbsp;&nbsp;&nbsp;共有: <span class=note>'.$maxrows['value'].'</span> 条聊天记录</td>
+	<td>&nbsp;&nbsp;&nbsp;Toatal: <span class=note>'.$maxrows['value'].'</span> items record</td>
 	<td>
 	<form method="post" action="admin.messages.php" name="searchform">
-	选择:&nbsp;<select name="u"><option value="0">全部客服</option>'. $useroptions .'</select>&nbsp;&nbsp;&nbsp;&nbsp;<input type="submit" name="search" value=" 搜索留言 " />
+	Service:&nbsp;<select name="u"><option value="0">All</option>'. $useroptions .'</select>&nbsp;&nbsp;&nbsp;&nbsp;<input type="submit" name="search" value=" Search " />
 	</form>
 	</td>
 	
@@ -60,22 +60,22 @@ if($action == 'default'){
 	<thead>
 	<tr>
 	<th>FROM</th>
-	<th>IP地址</th>
-	<th>聊天内容</th>
+	<th>IP Address</th>
+	<th>Chat Content</th>
 	<th>TO</th>
-	<th>时间</th>
-	<th><input type="checkbox" checkall="group" onclick="select_deselectAll (\'messagesform\', this, \'group\');"> 删除</th>
+	<th>Time</th>
+	<th><input type="checkbox" checkall="group" onclick="select_deselectAll (\'messagesform\', this, \'group\');"> delete</th>
 	</tr>
 	</thead>
 	<tbody>';
     if($maxrows['value'] < 1){
-        echo '<tr><td colspan="6"><center><span class=red>暂无任何留言!</span></center></td></tr></tbody></table></form>';
+        echo '<tr><td colspan="6"><center><span class=red>No comment!</span></center></td></tr></tbody></table></form>';
     }else{
         while($comment = $DB->fetch($getmessages)){
             echo '<tr>
-            <td>'.Iif($users[$comment['fromid']], '<a href="admin.users.php?action=edituser&userid='.$comment['fromid'].'">' . $users[$comment['fromid']] . '</a>', $comment['fromid']).'</td>
+            <td>'.Iif($users[$comment['fromid']], '<a href="admin.users.php?action=edituser&userid='.$comment['fromid'].'">' . $users[$comment['fromid']] . '</a>', 'Guest '.$comment['fromid']).'</td>
 			
-			<td>' . Iif($comment['guestip'], '<a href="javascript:;" hidefocus="true" onclick="iplocation(\'' . $comment['msgid'] . '\', \'' . $comment['guestip'] . '\');return false;" title="查看IP归属地">' . $comment['guestip'] . '</a><br><span id="ip_' . $comment['msgid'] . '"></span>', '&nbsp;') . '</td>
+			<td>' . Iif($comment['guestip'], '<a href="javascript:;" hidefocus="true" onclick="iplocation(\'' . $comment['msgid'] . '\', \'' . $comment['guestip'] . '\');return false;" title="IP Address">' . $comment['guestip'] . '</a><br><span id="ip_' . $comment['msgid'] . '"></span>', '&nbsp;') . '</td>
 			<td>'.nl2br($comment['msg']). '</a></td>
 			<td>'.Iif($users[$comment['toid']], '<a href="admin.users.php?action=edituser&userid='.$comment['toid'].'">' . $users[$comment['toid']] . '</a>', $comment['toid']).'</td>
 			<td>' . DisplayDate($comment['created'], 0, 1) . '</td>
@@ -89,7 +89,7 @@ if($action == 'default'){
         echo '</tbody>
 		</table>
 		<div style="margin-top:20px;text-align:center;">
-		<input type="submit" onclick="return confirm(\'确定删除所选聊天吗?\');" value=" 删除聊天 " />
+		<input type="submit" onclick="return confirm(\'Are you sure you want to delete the selected message??\');" value=" Delete the message " />
 		</div>
 		</form>';
     }

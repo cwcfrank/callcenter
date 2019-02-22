@@ -73,16 +73,16 @@ if($action == 'default'){
 
 	echo '<table border="0" cellpadding="0" cellspacing="0" width="100%">
 	<tr>
-	<td>&nbsp;&nbsp;&nbsp;共有: <span class=note>'.$maxrows['value'].'</span> 條留言</td>
+	<td>&nbsp;&nbsp;&nbsp;共有: <span class=note>'.$maxrows['value'].'</span> items message</td>
 	<td>
 	<form method="post" action="admin.comments.php" name="searchform">
-	選擇:&nbsp;<select name="u"><option value="0">全部客服</option>'. $useroptions .'</select>&nbsp;&nbsp;&nbsp;&nbsp;<input type="submit" name="search" value=" 搜索留言 " />
+	Service:&nbsp;<select name="u"><option value="0">All</option>'. $useroptions .'</select>&nbsp;&nbsp;&nbsp;&nbsp;<input type="submit" name="search" value=" Search " />
 	</form>
 	</td>
 	<td>
 	<form method="post" action="admin.comments.php" name="deleteform">
 	<input type="hidden" name="action" value="fastdelete">
-	選擇:&nbsp;<select name="u"><option value="0">全部客服</option>'. $useroptions .'</select>&nbsp;&nbsp;<select name="days"><option value="0">全部留言</option><option value="1">1 天前</option><option value="5">5 天前</option><option value="10">10 天前</option><option value="30">30 天前</option><option value="60">60 天前</option><option value="90">90 天前</option></select>&nbsp;&nbsp;&nbsp;&nbsp;<input type="submit" name="delete" onclick="return confirm(\'確定刪除所選留言嗎?\');" value=" 快速刪除 " />
+	Service:&nbsp;<select name="u"><option value="0">All</option>'. $useroptions .'</select>&nbsp;&nbsp;Time: <select name="days"><option value="0">All</option><option value="1">1 day ago</option><option value="5">5 day ago</option><option value="10">10 day ago</option><option value="30">30 day ago</option><option value="60">60 day ago</option><option value="90">90 day ago</option></select>&nbsp;&nbsp;&nbsp;&nbsp;<input type="submit" name="delete" onclick="return confirm(\'Are you sure you want to delete the selected message?\');" value=" Quickly delete " />
 	</form>
 	</td>
 	</tr>
@@ -95,18 +95,18 @@ if($action == 'default'){
 	<table id="welive_list" border="0" cellpadding="0" cellspacing="0" class="moreinfo">
 	<thead>
 	<tr>
-	<th>留言人</th>
-	<th>IP地址</th>
-	<th>留言內容</th>
-	<th>留言給</th>
-	<th>時間</th>
-	<th><input type="checkbox" checkall="group" onclick="select_deselectAll (\'commentsform\', this, \'group\');"> 刪除</th>
+	<th>From</th>
+	<th>IP Address</th>
+	<th>Message</th>
+	<th>TO</th>
+	<th>Time</th>
+	<th><input type="checkbox" checkall="group" onclick="select_deselectAll (\'commentsform\', this, \'group\');"> Delete</th>
 	</tr>
 	</thead>
 	<tbody>';
 
 	if($maxrows['value'] < 1){
-		echo '<tr><td colspan="6"><center><span class=red>暫無任何留言!</span></center></td></tr></tbody></table></form>';
+		echo '<tr><td colspan="6"><center><span class=red>No message!</span></center></td></tr></tbody></table></form>';
 	}else{
 		while($comment = $DB->fetch($getcomments)){
 			echo '<tr>

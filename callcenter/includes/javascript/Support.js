@@ -1,3 +1,15 @@
+function sex(gid) {
+	var sex=document.getElementById("selectsex")
+	ajax("support.php?act=sex&gid=" + gid + "&sex=" + sex.options[sex.selectedIndex].text, donothing)
+   
+}
+
+function age(gid) {
+	var age=document.getElementById("selectage")
+	ajax("support.php?act=age&gid=" + gid + "&age=" + age.options[age.selectedIndex].text, donothing)
+   
+}
+
 function $(id) {
     return typeof id == "string" ? document.getElementById(id) : id
 }
@@ -454,28 +466,37 @@ function ajax(url, callback, updating, loading, format, method) {
 function setOffline() {
     ajax("support.php?act=offline", donothing)
 }
-
+//更改為上線
 function setOnline() {
     ajax("support.php?act=online");
+    waiting()
+}
+//更改為忙碌中
+function setstatuson() {
+    ajax("support.php?act=statuson", donothing)
+}
+
+function setstatusoff() {
+    ajax("support.php?act=statusoff");
     waiting()
 }
 
 function setbusy() {
     ajax("support.php?act=setbusy", donothing);
     var obj = $('setbusy');
-    if (obj) obj.innerHTML = '<a href="javascript:;" onclick="unsetbusy();return false;"><b><span style="color:#FF3300;">解除挂起 ！！！</span></b></a>'
+    if (obj) obj.innerHTML = '<a href="javascript:;" onclick="unsetbusy();return false;"><b><span style="color:#FF3300;">Release ！！！</span></b></a>'
 }
 
 function unsetbusy() {
     ajax("support.php?act=unsetbusy", donothing);
     var obj = $('setbusy');
-    if (obj) obj.innerHTML = '<a href="javascript:;" onclick="setbusy();return false;"><b>挂起</b></a> '
+    if (obj) obj.innerHTML = '<a href="javascript:;" onclick="setbusy();return false;"><b>掛斷</b></a> '
 }
 
 function banned(gid) {
     ajax("support.php?act=banned&gid=" + gid, donothing);
     var obj = $('ban' + gid);
-    if (obj) obj.innerHTML = '<a href="javascript:;" class="red" hidefocus="true" onclick="unbanned(' + gid + ');return false;">' + unban + '</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="javascript:;" hidefocus="true" onclick="kickout(' + gid + ');return false;">踢出</a>';
+    if (obj) obj.innerHTML = '<a href="javascript:;" class="red" hidefocus="true" onclick="unbanned(' + gid + ');return false;">' + unban + '</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="javascript:;" hidefocus="true" onclick="kickout(' + gid + ');return false;">Hang out</a>';
     if (in_array(gid, guest)) {
         guest['g' + gid]['banned'] = 1;
         output_win(gid + '|||0|||' + guestname + gid + baninfo + '|||0|||000|||0^^^')
@@ -485,7 +506,7 @@ function banned(gid) {
 function unbanned(gid) {
     ajax("support.php?act=unbanned&gid=" + gid, donothing);
     var obj = $('ban' + gid);
-    if (obj) obj.innerHTML = '<a href="javascript:;" hidefocus="true" onclick="banned(' + gid + ');return false;">' + ban + '</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="javascript:;" hidefocus="true" onclick="kickout(' + gid + ');return false;">踢出</a>';
+    if (obj) obj.innerHTML = '<a href="javascript:;" hidefocus="true" onclick="banned(' + gid + ');return false;">' + ban + '</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="javascript:;" hidefocus="true" onclick="kickout(' + gid + ');return false;">Hang out</a>';
     if (in_array(gid, guest)) {
         output_win(gid + '|||0|||' + guestname + gid + unbaninfo + '|||1|||000|||0^^^')
     }
@@ -607,64 +628,121 @@ function welive_output(data) {
     allguests = allguests.split('^^^');
     for (var i = 0; i < allguests.length; i++) {
         aguest = allguests[i].split('|||');
-        if (!aguest[1]) continue;
+        
         isonline = aguest[4];
         gid = aguest[0];
         if (isonline == 1) {
             onlines += 1;
             row = $('g' + gid);
             if (!row) {
+/*iframe無法用了 使用此方式*/	
+				var myWindow = window.open('https://www.id-yours.com:8443/demos/admin.html#'+ callcentername + gid,'Guset'+ gid,config='height=800,width=1000');	
+/*0214改版使用此方式*/									
                 row = document.createElement("tr");
                 row.setAttribute("id", "g" + gid);
                 cell = document.createElement("td");
-                cell.innerHTML = '<a href="javascript:;" hidefocus="true" onclick="openwin(' + gid + ', \'' + guestname + gid + '\');return false;" title="打开对话窗口">' + guestname + gid + '</a> (<span id="new' + gid + '">0</span>)<iframe src="https://192.168.8.119:8443/admin.html#' + callcentername + gid + '" width="350" height="450"></iframe>';
+                cell.innerHTML = '<a href="javascript:;" hidefocus="true" onclick="openwin(' + gid + ', \'' + guestname + gid + '\');return false;" title="Open-Chat">' + guestname + gid + '</a> (<span id="new' + gid + '">0</span>)';
                 cell.className = 'first';
-                row.appendChild(cell);
-                cell = document.createElement("td");
+                row.appendChild(cell);	
+				
+/*取得訪客來源網址*/var wor = aguest[6].split("=");
+
+				if(wor[1]){//alert(wor[1]);
+				 
+				}else{
+				var words = ["Guest", "Guest", "Guest", "Guest"];
+					}
+													
+/*當天日期*/				
+                cell = document.createElement("span");
+				var Today=new Date();
+				cell.innerHTML = '<BR><BR><BR><BR>Visit Date︰' + Today.getFullYear()+ '/' + (Today.getMonth()+1) + '/' + Today.getDate() + '  ' + Today.getHours() + ':' + Today.getMinutes() + ' ';
+                row.appendChild(cell);		
+/*訪客訪客試做訂單編號*/				
+                cell = document.createElement("span");
+				cell.innerHTML = '<BR><BR>Order Code︰'+ wor[1];
+                row.appendChild(cell);	
+/*訪客訪客會員編號*/				
+                cell = document.createElement("span");
+				cell.innerHTML = '<BR><BR>Member Code︰'+ wor[1];
+                row.appendChild(cell);			
+/*是否為黑名單*/				
+                cell = document.createElement("span");
+				cell.innerHTML = '<BR><BR>Blacklist︰<span class=red>' + wor[1] + '</span>';
+                row.appendChild(cell);													
+/*訪客資本資料*/				
+                cell = document.createElement("span");
+				cell.innerHTML = '<BR><BR>SEX︰<select class="form-control" id="selectsex" onChange="sex(' + gid + ');"><option value="">---</option><option value="man">man</option><option value="woman">woman</option></select><BR>AGE︰<select class="form-control" id="selectage" onChange="age(' + gid + ');"><option value="">---</option><option value="under20">under20</option><option value="21~30">21~30</option><option value="31~40">31~40</option><option value="41~50">41~50</option><option value="51~60">51~60</option><option value="61~70">61~70</option><option value="over70">over70</option>';
+                row.appendChild(cell);				
+/*訪客在線時間*/				
+/*              cell = document.createElement("span");
                 cell.setAttribute("id", "login" + gid);
-                cell.innerHTML = getLocalTime();
+                cell.innerHTML = '<BR><BR>Time Online︰'+getLocalTime();
+                row.appendChild(cell);*/
+/*訪客IP*/					
+                cell = document.createElement("span");
+                cell.innerHTML = '<BR><BR>IP Address︰<a href="javascript:;" hidefocus="true" onclick="iplocation(' + gid + ', \'' + aguest[1] + '\');return false;" title="IP-Country">' + aguest[1] + '</a><br><span id="ip_' + gid + '"></span>';
                 row.appendChild(cell);
-                cell = document.createElement("td");
-                cell.innerHTML = '<a href="javascript:;" hidefocus="true" onclick="iplocation(' + gid + ', \'' + aguest[1] + '\');return false;" title="查看IP归属地">' + aguest[1] + '</a><br><span id="ip_' + gid + '"></span>';
+/*訪客瀏覽器*/					
+                cell = document.createElement("span");
+                cell.innerHTML = '<BR><BR>Browser︰'+aguest[2] + ' (' + (aguest[3] == 1 ? '<span class=green>中文</span>' : '<span class=red>English</span>') + ')';
                 row.appendChild(cell);
-                cell = document.createElement("td");
-                cell.innerHTML = aguest[2] + ' (' + (aguest[3] == 1 ? '<span class=green>中文</span>' : '<span class=red>English</span>') + ')';
+/*訪客來源網頁*/					
+                cell = document.createElement("span");
+                cell.innerHTML = '<BR><BR>From Page︰'+getURL(aguest[6], 50);
                 row.appendChild(cell);
-                cell = document.createElement("td");
-                cell.innerHTML = getURL(aguest[6], 50);
-                row.appendChild(cell);
-                cell = document.createElement("td");
+/*執行動作*/					
+                cell = document.createElement("span");
                 cell.setAttribute("id", "ban" + gid);
                 if (aguest[5] == 1) {
-                    cell.innerHTML = '<a href="javascript:;" class="red" hidefocus="true" onclick="unbanned(' + gid + ');return false;">' + unban + '</a>'
+                    cell.innerHTML = '<BR><BR>Acotion︰<a href="javascript:;" class="red" hidefocus="true" onclick="unbanned(' + gid + ');return false;">' + unban + '</a>'
                 } else {
-                    cell.innerHTML = '<a href="javascript:;" hidefocus="true" onclick="banned(' + gid + ');return false;">' + ban + '</a>'
+                    cell.innerHTML = '<BR><BR>Acotion︰<a href="javascript:;" hidefocus="true" onclick="banned(' + gid + ');return false;">' + ban + '</a>'
                 }
-                cell.innerHTML = cell.innerHTML + '&nbsp;&nbsp;|&nbsp;&nbsp;<a href="javascript:;" hidefocus="true" onclick="kickout(' + gid + ');return false;">踢出</a>';
+                cell.innerHTML = cell.innerHTML + '&nbsp;&nbsp;|&nbsp;&nbsp;<a href="javascript:;" hidefocus="true" onclick="kickout(' + gid + ');return false;">Hang out</a>';
                 row.appendChild(cell);
                 eWelive.insertBefore(row, eWelive.childNodes[0]);
                 openwin(gid, guestname + gid);
                 allmsgs = gid + '|||0|||' + newguest + '|||1|||000|||0^^^' + (allmsgs.length > 18 ? allmsgs.replace(/\r\n|\n|\r/g, '') : '');
                 InitMyWin(gid)
+				
+				/*畫面自動帶到此訪客列*/
+				window.location="#g"+gid+"";				
+				
             } else if (in_array(gid, guest) && guest['g' + gid]['online'] == 0) {
+				
+				/*提醒客服 之前的訪客又上線了*/
+				alert("The 【Guest "+ gid +"】 is re-connect!");
+				/*iframe無法用了 使用此方式*/	
+				var myWindow = window.open('https://www.id-yours.com:8443/demos/admin.html#'+ callcentername + gid,'Guset'+ gid,config='height=800,width=1000');	
+				/*0214改版使用此方式*/	
+				
                 guest['g' + gid]['online'] = 1;
                 var eLogin = $("login" + gid);
                 if (eLogin) eLogin.innerHTML = getLocalTime();
                 allmsgs = gid + '|||0|||' + guestname + gid + reonline + '|||1|||000|||0^^^' + (allmsgs.length > 18 ? allmsgs.replace(/\r\n|\n|\r/g, '') : '')
+				
+				/*畫面自動帶到此訪客列*/
+				window.location="#g"+gid+"";
             }
         } else {
             if (!in_array(gid, guest) || guest['g' + gid]['online'] == 0) continue;
             guest['g' + gid]['online'] = 0;
             var eLogin = $("login" + gid);
-            if (eLogin) eLogin.innerHTML = '<span class=red>已离线</span>';
+            if (eLogin) eLogin.innerHTML = '<span class=red>Offline</span>';
             gwin = $("win" + gid);
             if (gwin) {
                 allmsgs = (allmsgs.length > 18 ? allmsgs.replace(/\r\n|\n|\r/g, '') : '') + gid + '|||0|||' + guestname + gid + er_goffline + '|||0|||000|||0^^^'
             }
+			alert("【Guest "+ gid +"】 Left!");
         }
     }
+
+
+
+	
     if (onlines == 0) {
-        eNoguest.style.display = 'block'
+        eNoguest.style.display = 'block';
     } else {
         eNoguest.style.display = 'none'
     }
@@ -749,3 +827,4 @@ function getURL(url, limit) {
     urllink += url + '</a>';
     return urllink
 }
+  

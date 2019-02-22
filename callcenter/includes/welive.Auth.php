@@ -123,7 +123,7 @@ function LogIn(){
 	<div class="submit">
 	<input type="submit" onclick="setSafeCookie();return true;" value="' . $lang['login'] . '" class="button" />
 	</div>
-	<div class="copyright">&copy; '.date("Y") .' <a href="'.APP_URL.'" target="_blank">'. APP_NAME .'</a></div>
+	<div class="copyright">&copy; '.date("Y") .' ID YOURS</div>
 	</form>
 	</div>
 	</body>

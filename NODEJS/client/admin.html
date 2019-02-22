@@ -1,0 +1,81 @@
+<!doctype html>
+<html>
+    <head>
+        <title>ID YOURS</title>
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+        <!--<link rel="stylesheet" type="text/css" href="main.css">-->
+        <script src="signaling_channel.js"></script>
+        <script src="sdp.js"></script>
+        <script src="admin.js"></script>
+    </head>
+    <style>
+      video { 
+         background: black; 
+         border: 1px solid #009abd; 
+      }
+		
+      .call-page { 
+         position: relative; 
+         display: block; 
+         margin: 0 auto; 
+         width: 100%; 
+         height: 100%;
+		 top:22px; 
+      } 
+		
+      #self_view { 
+         height: 20%; 
+         position: absolute; 
+         right: 0px;
+		 z-index:999px  
+      }
+		
+      #remote_view { 
+         width: 100%; 
+         height: 30%; 
+      }
+		
+    </style>    
+    <body>
+        <header>
+        </header>
+<!--        <section id="main-section">
+            <div id="settings-container">-->
+                <input type="hidden" id="session_txt" value="" size="10">
+                <input class="btn" type="hidden" id="join_but" value="Join" disabled>
+
+                <input type="hidden" id="audio_cb" checked>
+                <input type="hidden" id="video_cb" checked>
+                <input type="hidden" id="chat_cb" checked>
+                <div id="audio-only-container"></div>
+                <div id="share-container" style="display:none;">
+                    Send link to a friend: <a id="share_link" target="_blank" href=""></a>
+                </div>
+            </div>
+            
+            <div id="video-container" class="call-page" style="width:55%;">
+                <video id="self_view" class="shadow owr-overlay-video" autoplay style="z-index:999;" muted="muted"></video>
+                <video id="remote_view" class="shadow owr-overlay-video" controls autoplay></video>
+            </div>
+            
+            <div id="chat_div"></div>
+            <div id="chat-container" style="display:none;">
+                <input type="sendtext" id="chat_txt" disable placeholder="Type here">
+                <input type="button" class="btn" id="chat_but" value="Send">
+            </div>
+            <div id="log_div"></div>
+<!--        </section>
+        <footer>
+            Copyright ID YOURS
+        </footer>-->
+        
+        <!--等待通話音樂 -->      
+        <audio id="audio1" style=" display:none;" controls loop="loop"><source = src="ring.mp3" type="audio/mp3"></audio>        
+        
+        <BR>
+       
+        <input class="btn" type="button" id="call_but" value="" disabled style="background-image:url(answer_start.png); width:100px; height:52px; border-radius:10px;">
+        <input class="btn" type="button" id="close_but" value="" onClick="stopwebrtc();" style="background-image:url(stop.png); width:100px; height:52px; border-radius:10px;">
+        
+    </body>
+</html>

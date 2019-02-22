@@ -3,7 +3,7 @@
 
 $lang=array();
 
-$lang['chat']        = 'Chat';
+$lang['chat']        = 'Talk';
 $lang['msg']        = 'Msg.';
 $lang['login']        = ' Login ';
 $lang['login_title']  = 'Support Login';

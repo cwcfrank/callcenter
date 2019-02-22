@@ -69,7 +69,7 @@ if($action == 'insertmsg' OR $action == 'updatemsg'){
 	}
 
 	if(strlen($msg) == 0){
-		$errors = '請輸入短語內容!';
+		$errors = 'Please enter the phrase content!';
 	}
 
 	if(isset($errors)){
@@ -118,7 +118,7 @@ if($action == 'editmsg' OR $action == 'addmsg'){
 	<table id="welive_list" border="0" cellpadding="0" cellspacing="0" class="maintable">
 	<thead>
 	<tr>
-	<th colspan="2">添加短語</th>
+	<th colspan="2">Add phrases</th>
 	</tr>
 	</thead>
 	<tbody>
@@ -162,10 +162,10 @@ if($action == 'default'){
 
 	echo '<table border="0" cellpadding="0" cellspacing="0" width="100%">
 	<tr>
-	<td>&nbsp;&nbsp;&nbsp;共有: <span class=note>'.$maxrows['value'].'</span> 條短語&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="admin.automsg.php?action=addmsg">添加短語</a></td>
+	<td>&nbsp;&nbsp;&nbsp;Toatal: <span class=note>'.$maxrows['value'].'</span> items&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="admin.automsg.php?action=addmsg">Add phrases</a></td>
 	<td>
 	<form method="post" action="admin.automsg.php" name="searchform">
-	關鍵字:&nbsp;<input type="text" name="s" size="22">&nbsp;&nbsp;&nbsp;&nbsp;<input type="submit" name="search" value=" 搜索短語 " />
+	Keyword:&nbsp;<input type="text" name="s" size="22">&nbsp;&nbsp;&nbsp;&nbsp;<input type="submit" name="search" value=" Search " />
 	</form>
 	</td>
 	</tr>
@@ -177,24 +177,24 @@ if($action == 'default'){
 	<table id="welive_list" border="0" cellpadding="0" cellspacing="0" class="moreinfo">
 	<thead>
 	<tr>
-	<th>排序編號</th>
-	<th>狀態</th>
-	<th>短語內容</th>
-	<th>編輯</th>
-	<th><input type="checkbox" checkall="group" onclick="select_deselectAll (\'messagesform\', this, \'group\');"> 刪除</th>
+	<th>NO.</th>
+	<th>Status</th>
+	<th>Content</th>
+	<th>Edit</th>
+	<th><input type="checkbox" checkall="group" onclick="select_deselectAll (\'messagesform\', this, \'group\');"> Delete</th>
 	</tr>
 	</thead>
 	<tbody>';
 
 	if($maxrows['value'] < 1){
-		echo '<tr><td colspan="5"><center><span class=red>暫無任何短語!</span></center></td></tr></tbody></table></form>';
+		echo '<tr><td colspan="5"><center><span class=red>No phrases!</span></center></td></tr></tbody></table></form>';
 	}else{
 		while($message = $DB->fetch($getmessages)){
 			echo '<tr>
 			<td><input type="hidden" name="msgids[]" value="'.$message['msgid'].'" /><input type="text" name="ordernums[]" value="' . $message['ordernum'] . '" size="4" /></td>
-			<td><select name="activateds[]"><option value="1">顯示</option><option style="color:red;" value="0" ' . Iif(!$message['activated'], 'SELECTED', '') . '>隱藏</option></select></td>
+			<td><select name="activateds[]"><option value="1">Display</option><option style="color:red;" value="0" ' . Iif(!$message['activated'], 'SELECTED', '') . '>Hide</option></select></td>
 			<td><textarea name="msgs[]" style="height:32px;width:360px;">'.$message['msg'].'</textarea></td>
-			<td><a href="admin.automsg.php?action=editmsg&msgid='.$message['msgid'].'">'.Iif($message['activated'], '編輯', '<span class=red>編輯</span>').'</a></td>
+			<td><a href="admin.automsg.php?action=editmsg&msgid='.$message['msgid'].'">'.Iif($message['activated'], 'Edit', '<span class=red>Edit</span>').'</a></td>
 			<td><input type="checkbox" name="deletemsgids[]" value="' . $message['msgid'] . '" checkme="group"></td>
 			</tr>';
 		}
@@ -207,8 +207,8 @@ if($action == 'default'){
 		echo '</tbody>
 		</table>
 		<div style="margin-top:20px;text-align:center;">
-		<input type="submit" name="updatemsgs" value=" 保存更新 " />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-		<input type="submit" name="deletemsgs" onclick="return confirm(\'確定刪除所選短語嗎?\');" value=" 刪除短語 " />
+		<input type="submit" name="updatemsgs" value=" Save " />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		<input type="submit" name="deletemsgs" onclick="return confirm(\'Are you sure you want to delete the selected phrase?\');" value=" Delete " />
 		</div>
 		</form>';
 	}

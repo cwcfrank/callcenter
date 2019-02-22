@@ -14,6 +14,7 @@ $uid = ForceIncomingInt('uid');
 $gid = ForceIncomingInt('gid');
 $act = ForceIncomingString('act');
 $ajax_last = ForceIncomingFloat('ajax_last');
+$id = ForceIncomingInt('id');
 
 if(!$uid OR !$gid){
 	die('Hacking!');
@@ -29,8 +30,12 @@ $minitime =  $mktime[0];
 $lines = array();
 
 if($act == 'offline'){ //离开页面时设置客人为离线状态
-	$DB->exe("UPDATE " . TABLE_PREFIX . "guest SET isonline = 0 WHERE guestid = '$gid'");
 
+	$DB->exe("UPDATE " . TABLE_PREFIX . "guest SET isonline = 0 WHERE guestid = '$gid'");
+	
+	//更新訪客離線時間
+	$DB->exe("UPDATE " . TABLE_PREFIX . "guest_record  SET leaved = ".time()." WHERE id = '$id'");
+	
 }elseif($act == 'online'){
 	$DB->exe("UPDATE " . TABLE_PREFIX . "guest SET isonline = 1, created = '$realtime', serverid = '$uid' WHERE guestid = '$gid'");
 

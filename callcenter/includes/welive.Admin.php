@@ -27,8 +27,8 @@ function PrintHeader($username, $where = 'home') {
 	<div id="maindiv">
 	<div id="header">
 	<div class="logo"><img src="'.TURL.'images/logo.gif" align="absmiddle"> ' . SITE_TITLE . '</div>
-	<div id="memu"><a href="admin.home.php" '.Iif($where=='home', 'class="on"').' hidefocus="true">首頁</a><a href="admin.settings.php" '.Iif($where=='settings', 'class="on"').' hidefocus="true">設置</a><a href="admin.groups.php" '.Iif($where=='groups', 'class="on"').' hidefocus="true">群組</a><a href="admin.users.php" '.Iif($where=='users', 'class="on"').' hidefocus="true">用戶</a><a href="admin.automsg.php" '.Iif($where=='automsg', 'class="on"').' hidefocus="true">常用短語</a><a href="admin.comments.php" '.Iif($where=='comments', 'class="on"').' hidefocus="true">留言</a><a href="admin.messages.php" '.Iif($where=='messages', 'class="on"').' hidefocus="true">紀錄</a><a href="admin.upgrade.php" '.Iif($where=='upgrade', 'class="on"').' hidefocus="true">升級</a></div>
-	<div class="loginout">管理員: <span class=spec>'.$username.'</span>&nbsp;&nbsp;[ <a href="index.php?logout=1" hidefocus="true" onclick="return confirm(\'確定退出管理面板嗎?\');">安全退出</a> ]</div>
+	<div id="memu"><a href="admin.home.php" '.Iif($where=='home', 'class="on"').' hidefocus="true">Index</a><a href="admin.settings.php" '.Iif($where=='settings', 'class="on"').' hidefocus="true">Setting</a><a href="admin.groups.php" '.Iif($where=='groups', 'class="on"').' hidefocus="true">Group</a><a href="admin.users.php" '.Iif($where=='users', 'class="on"').' hidefocus="true">Service</a><a href="admin.automsg.php" '.Iif($where=='automsg', 'class="on"').' hidefocus="true">Common-Words</a><a href="admin.comments.php" '.Iif($where=='comments', 'class="on"').' hidefocus="true">Message</a><a href="admin.messages.php" '.Iif($where=='messages', 'class="on"').' hidefocus="true">Chat-Record</a><a href="admin.guest.php" '.Iif($where=='guest', 'class="on"').' hidefocus="true">Guset-Record</a></div>
+	<div class="loginout">Manager: <span class=spec>'.$username.'</span>&nbsp;&nbsp;[ <a href="index.php?logout=1" hidefocus="true" onclick="return confirm(\'Are you sure you want to exit the management panel??\');">Logot</a> ]</div>
 	</div>
 	<div class="contentdiv">
 	<div class="welive_div">';
@@ -41,7 +41,7 @@ function PrintFooter() {
 	<div class="blank40"></div>
 	</div>
 	<div id="footer">
-	<div class="copyright">' . COPYRIGHT . '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#top" title="TOP"><img src="'.TURL.'images/btn_top.gif" align="absmiddle" /></a></div>
+	<div class="copyright">© 2017 ID Yours Call Center&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#top" title="TOP"><img src="'.TURL.'images/btn_top.gif" align="absmiddle" /></a></div>
 	</div>
 	<script type="text/javascript">
 	var eWelive_list = $("welive_list");

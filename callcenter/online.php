@@ -24,6 +24,7 @@ if($_CFG['cActived']){
 	<html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<title>Callcenter│ID Yours A Personalized Jewelry Collection</title>
 	<style type="text/css">
 	body {font-family:Verdana,Arial; margin:0; padding:0; font-size:12px; color:#292929;}
 	div {margin:0 auto; padding:0;}
@@ -32,8 +33,8 @@ if($_CFG['cActived']){
 	a:hover {color:#292929;text-decoration:none;}
 	.usergroup {padding:0;height:22px;line-height:22px;background:#E1E1E1;color:#1E8FBB;text-indent:23px;overflow:hidden;}
 	.description {float:left;padding:3px 7px 0 7px;width:121px;overflow:hidden;line-height:18px;color:#9D5946;}
-	.user {margin:0 0 0 7px;padding:2px 0 6px 0;width:128px;white-space:nowrap;overflow:hidden;}
-	.user li {line-height:200%;}
+	.user {margin:0 0 0 7px;padding:2px 0 6px 0;white-space:nowrap;overflow:hidden;}
+	.user li {line-height:200px;float:left;}
 	.grey {color:#ACA9A8;}
 	.green {color:#51B400;}
 	.red {color:#FF6600;}
@@ -46,77 +47,164 @@ if($_CFG['cActived']){
 	</head>
 	<body>';
 
-    foreach ($welive_onlines AS $usergroup) {
-		if(IS_CHINESE){
-			$groupname   = $usergroup['groupname'];
-			$description   = $usergroup['description'];
-		}else{
-			$groupname   = $usergroup['groupename'];
-			$description   = $usergroup['descriptionen'];
-		}
+	$vvckey = PassGen(8);
 
-		echo '<div class="usergroup">' . $groupname. '</div>
-		'.Iif($description, '<div class="description">'.html($description).'</div>').'
-		<ul class="user">';
+	
+//載入IDYOUR上線的人
+$query_idyours_online = "SELECT * FROM  welive_user where  status = '1' order by rand()";
+$idyours_online = mysql_query($query_idyours_online, $dataconfig) or die(mysql_error());
+$row_idyours_online = mysql_fetch_assoc($idyours_online);
+$totalRows_idyours_online = mysql_num_rows($idyours_online);
 
-		foreach ($usergroup['user'] AS $userid => $user) {
-			$userfrontname = Iif(IS_CHINESE, $user['userfrontname'], $user['userfrontename']);
-			if(!$userfrontname){
-				$userfrontname = $user['username'];
-			}
-			
-			switch ($user['type']) {
-				case 1:
-					$vvckey = PassGen(8);
-					
-//載入上線狀況
-$query_welive_guest = "SELECT * FROM  welive_guest where  isonline = '1' && serverid = '".$userid."' ";
-$welive_guest = mysql_query($query_welive_guest, $dataconfig) or die(mysql_error());
-$row_welive_guest = mysql_fetch_assoc($welive_guest);
-$totalRows_welive_guest = mysql_num_rows($welive_guest);					
-					
-					if($user['isonline'] && $totalRows_welive_guest=='1'){   //顯示有上線的客服  且  正在服務1位客人
-						echo '<li style="background:url(' . TURL . 'images/user_online.gif) left no-repeat;padding-left:16px;">
-						<a onClick=alert("此服務人員忙線中，請選擇其他再線客服人員")>
-						' . $userfrontname. ' <span class=grey>[<span class=red>忙線中</span>]</span></a></li>';
+//載入SKYPE上線的人
+$query_skype_online = "SELECT * FROM  welive_user where  status = '1' order by rand()";
+$skype_online = mysql_query($query_skype_online, $dataconfig) or die(mysql_error());
+$row_skype_online = mysql_fetch_assoc($skype_online);
+$totalRows_skype_online = mysql_num_rows($skype_online);
 
-					}elseif($user['isonline'] && $totalRows_welive_guest=='0'){ //顯示有上線的客服 且 目前尚未服務任何客人
-						echo '<li style="background:url(' . TURL . 'images/user_online.gif) left no-repeat;padding-left:16px;">
-						<a onclick="setCookie(\'safecookieG'.$vvckey.COOKIE_KEY.'\',\''.md5($_CFG['cKillRobotCode'].$vvckey).'\');pp=window.open(\'' . BASEURL . 'enter.php?uid='.$userid.'&code='.md5($userid.WEBSITE_KEY.$vvckey).'&vvckey='.$vvckey.'&url=\'+parent.welive_thisPageUrl,\'newWin\',\'height=518,width=758,top=200,left=200,status=yes,toolbar=no,menubar=no,resizable=no,scrollbars=no,location=no,titlebar=no\');pp.focus();return false;" title="'.preg_replace('/\/\/1/i', $userfrontname, $lang['clickchat']).'">
-						' . $userfrontname. ' <span class=grey>[<span class=red>' . $lang['chat'] . '</span>]</span></a></li>';						
-						
-					}else{ //顯示有下線的客服
-						echo '<li style="background:url(' . TURL . 'images/user_offline.gif) left no-repeat;padding-left:16px;">
-						<a onclick="setCookie(\'safecookieG'.$vvckey.COOKIE_KEY.'\',\''.md5($_CFG['cKillRobotCode'].$vvckey).'\');pp=window.open(\'' . BASEURL . 'comment.php?uid='.$userid.'&code='.md5($userid.WEBSITE_KEY.$vvckey).'&vvckey='.$vvckey.'\',\'newWin\',\'height=478,width=568,top=200,left=200,status=yes,toolbar=no,menubar=no,resizable=no,scrollbars=no,location=no,titlebar=no\');pp.focus();return false;" title="'.preg_replace('/\/\/1/i', $userfrontname, $lang['clickmsg']).'">
-						<span class=grey>' . $userfrontname. ' [<span class=green>' . $lang['msg'] . '</span>]</span></a></li>';
-					}
-					break;
+//載入HANGOUTS上線的人
+$query_hangouts_online = "SELECT * FROM  welive_user where  status = '1' order by rand()";
+$hangouts_online = mysql_query($query_hangouts_online, $dataconfig) or die(mysql_error());
+$row_hangouts_online = mysql_fetch_assoc($hangouts_online);
+$totalRows_hangouts_online = mysql_num_rows($hangouts_online);
 
-				case 2:
-					echo '<li><a href="http://wpa.qq.com/msgrd?V=1&amp;Uin='.$user['username'].'&amp;Site='.APP_NAME.'&amp;Menu=yes" target="_blank" title="'.preg_replace('/\/\/1/i', $userfrontname, $lang['clickchat']).'"><img src="http://wpa.qq.com/pa?p=1:'.$user['username'].':4" height="16" alt="QQ" align="absmiddle"> '.$userfrontname.'</a></li>';
-					break;
+//載入Facebook上線的人
+$query_facebook_online = "SELECT * FROM  welive_user where  status = '1' order by rand()";
+$facebook_online = mysql_query($query_facebook_online, $dataconfig) or die(mysql_error());
+$row_facebook_online = mysql_fetch_assoc($facebook_online);
+$totalRows_facebook_online = mysql_num_rows($facebook_online);
 
-				case 3:
-					echo '<li><img src="' . TURL . 'images/msn.gif" alt="MSN" align="absmiddle" /> <a href="msnim:chat?contact='.$user['username'].'" title="'.preg_replace('/\/\/1/i', $userfrontname, $lang['clickchat']).'">'.$userfrontname.'</a></li>';
-					break;
+$alertmsg='All&nbsp;service&nbsp;is&nbsp;busy,&nbsp;please&nbsp;wait&nbsp;and&nbsp;call&nbsp;later.'; //彈出忙碌訊息
 
-				case 4:
-					echo '<li><img src="http://mystatus.skype.com/smallclassic/'.urlencode($user['username']).'" alt="Skype" align="absmiddle"> <a href="skype:'.urlencode($user['username']).'?call" title="'.preg_replace('/\/\/1/i', $userfrontname, $lang['clickchat']).'">'.$userfrontname.'</a></li>';
-					break;
+echo '<hr>';
+echo '<h2>&nbsp;IDYOURS</h2>';	
+?>
+<script> 
+	function changesrc<?php echo $userid?>() 
+	{  
+	setCookie('safecookieG<?php echo $vvckey.COOKIE_KEY;?>','<?php echo md5($_CFG['cKillRobotCode'].$vvckey);?>');
+	document.getElementById("cellphone").innerHTML='<iframe id="welive_iframe" style="width:100%;height:100%;" src="<?php echo '' . BASEURL . 'enter.php?uid='.$userid.'&code='.md5($userid.WEBSITE_KEY.$vvckey).'&vvckey='.$vvckey.'&url=https://'.$_SERVER['HTTP_HOST'].'/';?>" frameborder="0" scrolling="no" allowtransparency="true"></iframe>';
+	} 
+</script> 
+<?php 
+if($totalRows_idyours_online>0){  
 
-				case 5:
-					echo '<li><a href="http://amos1.taobao.com/msg.ww?v=2&uid='.urlencode($user['username']).'&s=2" target="_blank" title="'.preg_replace('/\/\/1/i', $userfrontname, $lang['clickchat']).'"><img src="http://amos1.taobao.com/online.ww?v=2&uid='.urlencode($user['username']).'&s=2" width="16" height="16" align="absmiddle" /> '.$userfrontname.'</a></li>';
-					break;				
-			}
-		}
+if(check_mobile()){//如果是用手機		
 
-		echo '</ul>';
+						echo '<a id="idyours" onclick="setCookie(\'safecookieG'.$vvckey.COOKIE_KEY.'\',\''.md5($_CFG['cKillRobotCode'].$vvckey).'\');pp=window.open(\'' . BASEURL . 'enter_mobile.php?uid='.$row_idyours_online['userid'].'&code='.md5($row_idyours_online['userid'].WEBSITE_KEY.$vvckey).'&vvckey='.$vvckey.'&url=\'+parent.welive_thisPageUrl,\'newWin\',\'height=918,width=1830,top=0,left=200,status=yes,toolbar=no,menubar=no,resizable=no,scrollbars=no,location=no,titlebar=no\');pp.focus();return false;" title="'.preg_replace('/\/\/1/i', $row_idyours_online['userfrontname'], $lang['clickchat']).'">
+						<img src="' . TURL . 'images/idyours.png" alt="" style="width:50px;margin-left:25px;"/></a>';	
+	
+}else{
+	  //用PC
+	
+						echo '<a id="idyours" onclick="setCookie(\'safecookieG'.$vvckey.COOKIE_KEY.'\',\''.md5($_CFG['cKillRobotCode'].$vvckey).'\');pp=window.open(\'' . BASEURL . 'enter_pc.php?uid='.$row_idyours_online['userid'].'&code='.md5($row_idyours_online['userid'].WEBSITE_KEY.$vvckey).'&vvckey='.$vvckey.'&url=\'+parent.welive_thisPageUrl,\'newWin\',\'height=950,width=700,top=0,left=200,status=yes,toolbar=no,menubar=no,resizable=no,scrollbars=no,location=no,titlebar=no\');pp.focus();return false;" title="'.preg_replace('/\/\/1/i', $row_idyours_online['userfrontname'], $lang['clickchat']).'">
+						<img src="' . TURL . 'images/idyours.png" alt="" style="width:50px;margin-left:25px;"/></a>';		
+	
+	}
+}else{
+							echo '<a id="idyours" onClick=alert("'.$alertmsg.'");myFunction();><div align="left"><img src="' . TURL . 'images/idyours.png" alt="" style="width:50px;margin-left:25px;"/><div></a>';	
+
+	
+	}
+	
+echo '<hr>';
+echo '<h2>&nbsp;&nbsp;&nbsp;SKYPE</h2>';
+
+if($totalRows_skype_online>0){
+
+echo "                           <iframe style=\"display:none;\" id=\"_detectSkypeClient_1506661585920\"></iframe>\n";
+echo "                            <span id=\"SkypeButton_Call_".$row_skype_online['skype']."_1_paraElement\">\n";
+echo "                            <a href=\"javascript://\" onclick=\"SkypeButton.tryAnalyzeSkypeUri('call', '0');SkypeButton.trySkypeUri_Generic('skype:".$row_skype_online['skype']."?call', '_detectSkypeClient_1506661585920', '0'); return false;\">\n";
+echo '							  <div align="left"><img src="' . TURL . 'images/skype.png" alt="" style="width:50px;margin-left:25px;"/><div>';
+echo "                            </a>\n";
+echo "                            </span>";
+}else{
+							echo '<a onClick=alert("'.$alertmsg.'")><div align="left"><img src="' . TURL . 'images/skype.png" alt="" style="width:50px;margin-left:25px;"/><div></a>';	
 	}
 
+echo '<hr>';
+echo '<h2>&nbsp;Hangouts</h2>';
+
+if($totalRows_hangouts_online>0){
+
+echo '<a target="_blank" href="https://hangouts.google.com/call/'.$row_hangouts_online['hangouts'].'">
+						<div align="left"><img src="' . TURL . 'images/hangout.png" alt="" style="width:50px;margin-left:25px;"/><div>
+						</a>';		
+
+}else{
+							echo '<a onClick=alert("'.$alertmsg.'")><div align="left"><img src="' . TURL . 'images/hangout.png" alt="" style="width:50px;margin-left:25px;"/><div></a>';	
+	
+	}
+
+
+echo '<hr>';
+echo '<h2>&nbsp;Facebook</h2>';
+
+if($totalRows_facebook_online>0){
+
+//echo '<a target="_blank" href="'.$row_facebook_online['facebook'].'">
+echo '<a target="_blank" href="https://www.facebook.com/IDYoursHeureux/inbox/">
+						<div align="left"><img src="' . TURL . 'images/facebook.png" alt="" style="width:50px;margin-left:25px;"/><div>
+						</a>';		
+
+}else{
+							echo '<a onClick=alert("'.$alertmsg.'")><div align="left"><img src="' . TURL . 'images/facebook.png" alt="" style="width:50px;margin-left:25px;"/><div></a>';	
+	
+	}
+	
 	echo '</body></html>';
 
 
 }
 
 ?>
+							<script type="text/javascript" src="../js/skype-uri.js"></script>
+                            
+                            
+                             <script type="text/javascript">
+                             Skype.ui({
+                                        "name": "call",
+                                        "element": "SkypeButton_Call_<?php echo $row_skype_online['skype'];?>_1",
+                                        "participants": ["<?php echo $row_skype_online['skype'];?>"],
+                                        "imageColor": "blue",
+                                        "imageSize": 32	 
+                             });
+                             </script>
 
+                             
+      <!--call again-->                       
+      <script type="text/javascript" src="../js/jquery.min.js"></script>
+                            
+	  <script>
+        var myVar;
+        function myFunction() {
+            myVar = setInterval(status, 3000);
+        }
+        </script>   
+        
+        <script language="javascript">
+        function status(){ 
+               
+               var data = '';
+               
+               $.ajax({
+                type: "POST",
+                url: 'online_status_check.php',
+                cache: false,
+                data:data,
+                error: function(){
+                    //alert('Ajax request 發生錯誤');
+                    },
+                success:function(html){
+                    
+                        newData=html.replace(/\s/g,''); //使用正規表達式，否則出錯
+                        if(newData=='OK'){  
+                            alert("Callcenter is available,you can call again.");
+                            self.location.reload();
+                        
+                        }
+                    }
+            });
+        
+        }
+        </script>                           

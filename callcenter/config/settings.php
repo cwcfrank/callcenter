@@ -3,13 +3,13 @@
 $_CFG = array();
 
 $_CFG['cActived'] = "1";
-$_CFG['cUpdate'] = "6";
+$_CFG['cUpdate'] = "4";
 $_CFG['cAutoOffline'] = "10";
-$_CFG['cLang'] = "Auto";
-$_CFG['cTimezone'] = "+8";
+$_CFG['cLang'] = "English";
+$_CFG['cTimezone'] = "8";
 $_CFG['cDateFormat'] = "Y-m-d";
 $_CFG['cTitle'] = "ID YOURS CALL CENTER";
-$_CFG['cTitle_en'] = "WeLive Online Support";
+$_CFG['cTitle_en'] = "ID Yours Online Service";
 $_CFG['cWelcome'] = "歡迎您登錄客服系統, 請咨詢, 謝謝!";
 $_CFG['cWelcome_en'] = "Welcome! please post your question...";
 $_CFG['cAppVersion'] = '3.2.0';

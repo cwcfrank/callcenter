@@ -16,6 +16,7 @@ $vvckey = ForceIncomingString('vvckey');
 $fromurl = ForceIncomingString('url', 'unknown');
 $gid = ForceInt(ForceIncomingCookie('weliveGID'.COOKIE_KEY));
 
+
 if(!$uid OR !$code OR !$vvckey){
 	$error = $lang['er_noaccess'];
 }elseif(ForceIncomingCookie('safecookieG'.$vvckey.COOKIE_KEY) != md5($_CFG['cKillRobotCode'] . $vvckey)){
@@ -88,12 +89,19 @@ $offline_time = Iif($offline_time, $offline_time, 10);
 
 if($gid){
 	$guest = $DB->getOne("SELECT guestid FROM " . TABLE_PREFIX . "guest WHERE guestid  = '$gid'");
+	
+	//新增訪客紀錄
+	$userAgent = get_userAgent($_SERVER['HTTP_USER_AGENT']);
+	$DB->exe("INSERT INTO " . TABLE_PREFIX . "guest_record (guestid, guestip, browser, created, serverid, fromurl) VALUES ('$gid', '".GetIP()."', '$userAgent', '$realtime', '$uid', '$fromurl')");	
+	
 }
 
 if(!$gid OR !$guest['guestid']){
 	$userAgent = get_userAgent($_SERVER['HTTP_USER_AGENT']);
 
+
 	$DB->exe("INSERT INTO " . TABLE_PREFIX . "guest (guestip, browser, lang, created, isonline, isbanned, serverid, fromurl) VALUES ('".GetIP()."', '$userAgent', '".IS_CHINESE."', '$realtime', 0, 0, '$uid', '$fromurl')");
+
 
 	$gid = $DB->insert_id();
 	setcookie('weliveGID'.COOKIE_KEY, $gid, ($realtime+60*60*24), "/");
@@ -102,7 +110,10 @@ if(!$gid OR !$guest['guestid']){
 }
 
 setcookie('weliveG'.COOKIE_KEY, md5($gid.WEBSITE_KEY.$uid.$_CFG['cKillRobotCode']), 0, "/");         //用于AJAX验证
-$ajaxpending = 'uid=' . $uid . '&gid=' . $gid;        //用于将客服ID和客人ID附加到AJAX URL
+
+$guest_record = $DB->getOne("SELECT id FROM " . TABLE_PREFIX . "guest_record order by id DESC");  //搜尋聊天室ID
+
+$ajaxpending = 'uid=' . $uid . '&gid=' . $gid. '&id=' . $guest_record['id'];        //用于将客服ID和客人ID附加到AJAX URL
 $welcome_info = preg_replace('/\/\/1/i', '<span class=spec>'.$gid.'</span>', $lang['welcome']);
 
 $smilies = ''; //添加表情图标
@@ -122,6 +133,54 @@ $js_var = "pagetitle=\"".SITE_TITLE."\",newmsg=\"$lang[newmsg]\",soundon=\"$lang
 
 //下以输出页面
 ?>
+<?php
+//載入IDYOUR上線的人
+$query_idyours_online = "SELECT * FROM  welive_user where  status = '1' order by rand()";
+$idyours_online = mysql_query($query_idyours_online, $dataconfig) or die(mysql_error());
+$row_idyours_online = mysql_fetch_assoc($idyours_online);
+$totalRows_idyours_online = mysql_num_rows($idyours_online);
+
+//載入SKYPE上線的人
+$query_skype_online = "SELECT * FROM  welive_user where  status = '1' order by rand()";
+$skype_online = mysql_query($query_skype_online, $dataconfig) or die(mysql_error());
+$row_skype_online = mysql_fetch_assoc($skype_online);
+$totalRows_skype_online = mysql_num_rows($skype_online);
+
+//載入HANGOUTS上線的人
+$query_hangouts_online = "SELECT * FROM  welive_user where  status = '1' order by rand()";
+$hangouts_online = mysql_query($query_hangouts_online, $dataconfig) or die(mysql_error());
+$row_hangouts_online = mysql_fetch_assoc($hangouts_online);
+$totalRows_hangouts_online = mysql_num_rows($hangouts_online);
+
+//如果客服忙線中 客人將無法連線蹦險是忙碌中
+if($totalRows_idyours_online==0){
+	?>
+	<script type="text/javascript">
+    alert("All service is busy, please wait.");
+	window.close();
+	document.location.href="https://www.id-yours.com";
+    </script>    
+    <?php
+	}
+if($totalRows_skype_online==0){
+	?>
+	<script type="text/javascript">
+    alert("All service is busy, please wait.");
+	window.close();
+	document.location.href="https://www.id-yours.com";
+    </script>    
+    <?php
+	}
+if($totalRows_hangouts_online==0){
+	?>
+	<script type="text/javascript">
+    alert("All service is busy, please wait.");
+	window.close();
+	document.location.href="https://www.id-yours.com";
+    </script>    
+    <?php
+	}		
+?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -131,6 +190,27 @@ $js_var = "pagetitle=\"".SITE_TITLE."\",newmsg=\"$lang[newmsg]\",soundon=\"$lang
 <script type="text/javascript" src="includes/javascript/WeLive.js"></script>
 <link rel="stylesheet" type="text/css" href="templates/styles.css">
 <link rel="shortcut icon" href="favicon.ico" />
+<script type="text/javascript">
+    var isFirefox = navigator.userAgent.match("Firefox");
+    var isOpera = navigator.userAgent.match("Opera");
+    var isSafarigoogle = navigator.userAgent.match("Safari");//Google瀏覽器是用這核心
+   
+    if(!isFirefox && !isOpera && !isSafarigoogle){
+        alert('Your browser does not support audio and video,please use Google Chrome latest version APP.');window.close();
+	}
+</script>    
+<script>
+BrowserDetect.init();
+if(BrowserDetect.browser=='Firfox' && BrowserDetect.version<52){
+	alert("Your browser does not support audio and video,please use Google Chrome latest version APP.");window.close();
+	}
+if(BrowserDetect.browser=='Chrome' && BrowserDetect.version<60){
+	alert("Your browser does not support audio and video,please use Google Chrome latest version APP.");window.close();
+	}	
+if(BrowserDetect.browser=='Opera' && BrowserDetect.version<41){
+	alert("Your browser does not support audio and video,please use Google Chrome latest version APP.");window.close();
+	}	
+</script>     
 </head>
 <body onkeydown="Enter(event);">
 
@@ -141,33 +221,33 @@ $js_var = "pagetitle=\"".SITE_TITLE."\",newmsg=\"$lang[newmsg]\",soundon=\"$lang
 		<div class="timer_div"><span id="timer">00:00</span></div>
 	</div>
 
-	<div class="ico_history"><?php echo '對話內容';?></div>
-	<div id="history"></div>
-	<div class="guest_right" style="width:180px;">
-		<div class="user_title"><?php echo $username?></div>
-		<div class="user_middle"><?php echo $userinfo?></div>
-		<div class="user_bottom"></div>
-        <iframe src="https://192.168.8.119:8443/user.html#<?php echo $username.$gid;?>" width="100%" height="500"></iframe>
+	<div class="ico_history"><img src="<?php echo $history_imgurl?>"></div>
+	<div id="history" style="height:558px;"></div>
+	<div class="guest_right" style="width:70%;height:100%;">
+		<div class="user_title" style="display:none;"><?php echo $username?></div>
+		<div class="user_middle" style="display:none;"><?php echo $userinfo?></div>
+		<div class="user_bottom" style="display:none;"></div>
+        <iframe src="https://<?php echo $_SERVER['HTTP_HOST'];?>:8443/demos/user.html#<?php echo $username.$gid;?>" width="100%" height="90%"></iframe>
 		<div class="adv"><?php echo $useradv?></div>
 	</div>
 
 	<div id="colors" class="colors_div" style="display:none"><?php echo $color_squares?></div>
 	<div id="smilies" class="smilies_div" style="display:none"><?php echo $smilies?></div>
-	<div id="guest_tools">
-		<div id="tools_sound" class="tools_sound_on" onmouseover="chClassname(this, 'sound');chSoundTitle(this);" onclick="toggleTools('sound');"></div>
-		<div id="tools_smile" class="tools_smile_off" onclick="showSmilies(0);" onmouseover="showSmilies();" title="<?php echo $lang['smilies']?>"></div>
-		<div id="tools_color" class="tools_color_off" onclick="showColors(0);" onmouseover="showColors();" title="<?php echo $lang['fontcolor']?>"></div>
-		<div id="tools_bold" class="tools_bold_off" onmouseover="chClassname(this, 'bold');" onclick="toggleTools('bold');" title="<?php echo $lang['bold']?>"></div>
-		<div id="tools_italic" class="tools_italic_off" onmouseover="chClassname(this, 'italic');" onclick="toggleTools('italic');" title="<?php echo $lang['italic']?>"></div>
-		<div id="tools_underline" class="tools_underline_off" onmouseover="chClassname(this, 'underline');" onclick="toggleTools('underline');" title="<?php echo $lang['underline']?>"></div>
-		<div id="tools_reset" class="tools_reset_off" onmouseover="chClassname(this, 'reset');" onclick="ResetInput();" title="<?php echo $lang['reset']?>"></div>
+	<div id="guest_tools" style="top:518px;">
+		<div id="tools_sound" class="tools_sound_on" onMouseOver="chClassname(this, 'sound');chSoundTitle(this);" onClick="toggleTools('sound');"></div>
+		<div id="tools_smile" class="tools_smile_off" onClick="showSmilies(0);" onMouseOver="showSmilies();" title="<?php echo $lang['smilies']?>"></div>
+		<div id="tools_color" class="tools_color_off" onClick="showColors(0);" onMouseOver="showColors();" title="<?php echo $lang['fontcolor']?>"></div>
+		<div id="tools_bold" class="tools_bold_off" onMouseOver="chClassname(this, 'bold');" onClick="toggleTools('bold');" title="<?php echo $lang['bold']?>"></div>
+		<div id="tools_italic" class="tools_italic_off" onMouseOver="chClassname(this, 'italic');" onClick="toggleTools('italic');" title="<?php echo $lang['italic']?>"></div>
+		<div id="tools_underline" class="tools_underline_off" onMouseOver="chClassname(this, 'underline');" onClick="toggleTools('underline');" title="<?php echo $lang['underline']?>"></div>
+		<div id="tools_reset" class="tools_reset_off" onMouseOver="chClassname(this, 'reset');" onClick="ResetInput();" title="<?php echo $lang['reset']?>"></div>
 		<div id="sounder" style="width:0;height:0;visibility:hidden;overflow:hidden;"></div>
 	</div>
 
-	<div class="ico_message"><img src="<?php echo $message_imgurl?>"></div>
-	<div class="message_div"><textarea id="message" class="message"></textarea></div>
-	<div class="tools_send_div">
-		<div id="tools_send" class="tools_send" onmouseover="chClassname(this, 'send');" onclick="sending();return false;"><?php echo $lang['send']?></div>
+	<div class="ico_message" style="top:550px;"><img src="<?php echo $message_imgurl?>"></div>
+	<div class="message_div" style="top:550px;"><textarea id="message" class="message"></textarea></div>
+	<div class="tools_send_div" style="left:400px;top:635px">
+		<div id="tools_send" class="tools_send" onMouseOver="chClassname(this, 'send');" onClick="sending();return false;"><?php echo $lang['send']?></div>
 	</div>
 
 	<div id="guest_bottom">
